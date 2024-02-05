@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/spacetronot-research-team/erago/cmd/createdomain"
+	"github.com/spacetronot-research-team/erago/cmd/createproject"
 	"github.com/spf13/cobra"
 )
 
@@ -17,6 +18,7 @@ func main() {
 	}
 
 	rootCmd.AddCommand(getCreateDomainCmd())
+	rootCmd.AddCommand(getCreateProjectCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
@@ -32,4 +34,15 @@ func getCreateDomainCmd() *cobra.Command {
 		Run:   createdomain.CLI,
 	}
 	return createDomainCmd
+}
+
+func getCreateProjectCmd() *cobra.Command {
+	createProjectCmd := &cobra.Command{
+		Use:   "create-project [project-name] [module-name]",
+		Short: "create-project will create new project with the provided domain name",
+		Long:  "create-project will create new project with the provided domain name.",
+		Args:  cobra.MinimumNArgs(2),
+		Run:   createproject.CLI,
+	}
+	return createProjectCmd
 }
