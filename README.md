@@ -1,7 +1,7 @@
 # erago
 Erajaya CLI generate project.
 
-![erago](https://github.com/spacetronot-research-team/erago/assets/57469556/8b25595e-1e07-4605-bb25-7b26e335c711)
+![erago](https://github.com/spacetronot-research-team/erago/assets/57469556/10dc6e4c-25e7-4b48-bb9e-1e34348b8012)
 
 ```
 ├── cmd/                Initial stage of the application will run.
