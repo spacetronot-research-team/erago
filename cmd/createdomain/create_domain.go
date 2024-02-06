@@ -52,6 +52,11 @@ func CreateDomain(domain string) {
 		log.Fatal(err)
 	}
 
+	log.Println("run go mod tidy")
+	if err := runGoModTidy(); err != nil {
+		log.Fatal(fmt.Errorf("err run go mod tidy: %v", err))
+	}
+
 	log.Println("create domain finish")
 }
 
@@ -161,6 +166,20 @@ func generateRepositoryTemplate(domain string) error {
 	err = os.WriteFile(path, []byte(repositoryTemplate), 0666)
 	if err != nil {
 		return fmt.Errorf("err write repository template: %v", err)
+	}
+
+	return nil
+}
+
+func runGoModTidy() error {
+	cmd := exec.Command("go", "mod", "tidy")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+
+	if string(stdout) != "" {
+		fmt.Println(string(stdout))
 	}
 
 	return nil

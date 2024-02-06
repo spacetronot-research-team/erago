@@ -58,31 +58,12 @@ func CreateProject(projectName string, moduleName string) {
 	log.Println("create domain hello world")
 	createdomain.CreateDomain("hello world")
 
-	log.Println("run go mod tidy")
-	if err := runGoModTidy(); err != nil {
-		log.Fatal(fmt.Errorf("err run go mod tidy in projectPath: %v", err))
-	}
-
 	log.Println("create project finish, go to your project:\n\tcd", projectPath)
 }
 
 func runGoModInit(moduleName string, projectPath string) error {
 	cmd := exec.Command("go", "mod", "init", moduleName)
 	cmd.Dir = projectPath
-	stdout, err := cmd.Output()
-	if err != nil {
-		return err
-	}
-
-	if string(stdout) != "" {
-		fmt.Println(string(stdout))
-	}
-
-	return nil
-}
-
-func runGoModTidy() error {
-	cmd := exec.Command("go", "mod", "tidy")
 	stdout, err := cmd.Output()
 	if err != nil {
 		return err
