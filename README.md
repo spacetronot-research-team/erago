@@ -60,7 +60,7 @@ New domain will be created in directory `go-customer/internal`.
 ## Docs
 
 ```shell
-hidayat@thinkubuntu:~/data-d/erajaya/git-repo/erago$ erago --help
+hidayat@thinkubuntu:~$ erago --help
 erago is Erajaya CLI generate project.
 
 Usage:
