@@ -5,6 +5,7 @@ import (
 
 	"github.com/spacetronot-research-team/erago/cmd/createdomain"
 	"github.com/spacetronot-research-team/erago/cmd/createproject"
+	"github.com/spacetronot-research-team/erago/cmd/explain"
 	"github.com/spacetronot-research-team/erago/cmd/version"
 	"github.com/spf13/cobra"
 )
@@ -21,6 +22,7 @@ func main() {
 	rootCmd.AddCommand(getCreateDomainCmd())
 	rootCmd.AddCommand(getCreateProjectCmd())
 	rootCmd.AddCommand(getVersionCmd())
+	rootCmd.AddCommand(getExplainCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
@@ -56,6 +58,17 @@ func getVersionCmd() *cobra.Command {
 		Long:  "version will print erago version.",
 		Args:  cobra.MaximumNArgs(0),
 		Run:   version.CLI,
+	}
+	return versionCmd
+}
+
+func getExplainCmd() *cobra.Command {
+	versionCmd := &cobra.Command{
+		Use:   "explain",
+		Short: "explain will explain code architecture",
+		Long:  "explain will explain code architecture.",
+		Args:  cobra.MaximumNArgs(0),
+		Run:   explain.CLI,
 	}
 	return versionCmd
 }

@@ -26,7 +26,7 @@ go install github.com/spacetronot-research-team/erago@latest
 or you can define your prefered version.
 
 ```shell
-go install github.com/spacetronot-research-team/erago@v0.0.6
+go install github.com/spacetronot-research-team/erago@v0.0.7
 ```
 
 Or you can download erago binary from release page.
@@ -56,3 +56,25 @@ cd go-customer && erago create-domain profile
 ```
 
 New domain will be created in directory `go-customer/internal`.
+
+## Docs
+
+```shell
+hidayat@thinkubuntu:~/data-d/erajaya/git-repo/erago$ erago --help
+erago is Erajaya CLI generate project.
+
+Usage:
+  erago [command]
+
+Available Commands:
+  create-domain  create-domain will create new domain with the provided domain name
+  create-project create-project will create new project with the provided domain name
+  explain        explain will explain code architecture
+  help           Help about any command
+  version        version will print erago version
+
+Flags:
+  -h, --help   help for erago
+
+Use "erago [command] --help" for more information about a command.
+```
