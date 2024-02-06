@@ -9,7 +9,19 @@ You can install by using go binary.
 go install github.com/spacetronot-research-team/erago@latest
 ```
 
+or you can define your prefered version.
+
+```shell
+go install github.com/spacetronot-research-team/erago@v0.0.3
+```
+
 Or you can download erago binary from release page.
+
+You can check your version by running.
+
+```shell
+erago version
+```
 
 ## Get Started
 
