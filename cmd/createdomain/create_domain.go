@@ -42,7 +42,7 @@ func CreateDomain(domain string) {
 	log.Println("generate mock repository using mockgen")
 	if err := generateMockRepository(domain); err != nil {
 		log.Println("err generate mock repository using mockgen, did you able to run `mockgen`?")
-		log.Println("try to install mockgen:\\ntgo install go.uber.org/mock/mockgen@latest")
+		log.Println("try to install mockgen:\n\tgo install go.uber.org/mock/mockgen@latest")
 		log.Println("create domain finish without mock repository and service test template")
 		return
 	}
