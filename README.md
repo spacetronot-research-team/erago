@@ -26,10 +26,10 @@ go install github.com/spacetronot-research-team/erago@latest
 or you can define your prefered version.
 
 ```shell
-go install github.com/spacetronot-research-team/erago@v0.0.7
+go install github.com/spacetronot-research-team/erago@v0.0.8
 ```
 
-Or you can download erago binary from release page.
+Or you can download erago binary from [release page](https://github.com/spacetronot-research-team/erago/releases).
 
 You can check your version by running.
 
@@ -55,7 +55,9 @@ New project will be created in directory `go-customer`.
 cd go-customer && erago create-domain profile
 ```
 
-New domain will be created in directory `go-customer/internal`.
+New domain will be created in directory `internal/controller/http/`.
+New domain will be created in directory `internal/service/`.
+New domain will be created in directory `internal/repository/`.
 
 ## Docs
 

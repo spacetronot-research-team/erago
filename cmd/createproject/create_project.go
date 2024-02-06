@@ -25,9 +25,9 @@ func CreateProject(projectName string, moduleName string) {
 		log.Fatal(fmt.Errorf("err run go mod init in project path: %v", err))
 	}
 
-	log.Println("create internal/controller dir in project dir")
-	if err := os.MkdirAll(filepath.Join(projectPath, "internal", "controller"), os.ModePerm); err != nil {
-		log.Fatal(fmt.Errorf("err mkdir projectPath/internal/controller: %v", err))
+	log.Println("create internal/controller/http dir in project dir")
+	if err := os.MkdirAll(filepath.Join(projectPath, "internal", "controller", "http"), os.ModePerm); err != nil {
+		log.Fatal(fmt.Errorf("err mkdir projectPath/internal/controller/http/: %v", err))
 	}
 
 	log.Println("create internal/service dir in project dir")

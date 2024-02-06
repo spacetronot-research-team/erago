@@ -117,7 +117,7 @@ func generateControllerTemplate(domain string, moduleName string) error {
 		return fmt.Errorf("err get controller template: %v", err)
 	}
 
-	path := filepath.Join("internal", "controller", strcase.ToSnake(domain)+".go")
+	path := filepath.Join("internal", "controller", "http", strcase.ToSnake(domain)+".go")
 	err = os.WriteFile(path, []byte(controllerTemplate), 0666)
 	if err != nil {
 		return fmt.Errorf("err write controller template: %v", err)
