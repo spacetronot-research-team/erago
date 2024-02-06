@@ -56,6 +56,11 @@ func CreateDomain(domain string) {
 		log.Fatal(err)
 	}
 
+	log.Println("generate mock service using mockgen")
+	if err := generateMockService(domain); err != nil {
+		log.Fatal(err)
+	}
+
 	log.Println("run go mod tidy")
 	if err := runGoModTidy(); err != nil {
 		log.Fatal(fmt.Errorf("err run go mod tidy: %v", err))
@@ -72,6 +77,26 @@ func generateMockRepository(domain string) error {
 
 	cmd := exec.Command("mockgen", source, destination, "-package=mockrepository")
 	cmd.Dir = filepath.Join("internal", "repository")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+
+	if string(stdout) != "" {
+		fmt.Println(string(stdout))
+	}
+
+	return nil
+}
+
+func generateMockService(domain string) error {
+	domainFileName := strcase.ToSnake(domain)
+
+	source := fmt.Sprintf("-source=%s.go", domainFileName)
+	destination := fmt.Sprintf("-destination=%s", filepath.Join("mockservice", domainFileName+".go"))
+
+	cmd := exec.Command("mockgen", source, destination, "-package=mockservice")
+	cmd.Dir = filepath.Join("internal", "service")
 	stdout, err := cmd.Output()
 	if err != nil {
 		return err

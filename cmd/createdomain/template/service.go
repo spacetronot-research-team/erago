@@ -28,6 +28,7 @@ type ServiceConfig struct {
 	DomainPascalCase string
 	DomainCamelCase  string
 	DomainShort      string
+	DomainSnakeCase  string
 	ModuleName       string
 	VarErr1          string
 	VarErr2          string
@@ -38,6 +39,7 @@ func NewServiceConfig(domain string, varErr1 string, varErr2 string) ServiceConf
 		DomainPascalCase: strcase.ToCamel(domain),
 		DomainCamelCase:  strcase.ToLowerCamel(domain),
 		DomainShort:      getDomainShort(domain),
+		DomainSnakeCase:  strcase.ToSnake(domain),
 		VarErr1:          varErr1,
 		VarErr2:          varErr2,
 	}
@@ -51,6 +53,8 @@ import (
 
 	"{{.ModuleName}}/internal/repository"
 )
+
+//go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mockservice/{{.DomainSnakeCase}}.go -package=mockservice
 
 var (
 	Err{{.VarErr1}} = errors.New("err jasdfsefs")
