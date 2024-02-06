@@ -1,6 +1,20 @@
 # erago
 Erajaya CLI generate project.
 
+![erago](https://github.com/spacetronot-research-team/erago/assets/57469556/8b25595e-1e07-4605-bb25-7b26e335c711)
+
+```
+├── cmd/                Initial stage of the application will run.
+├── internal/           Core module of the application and contains the implementation of various business logic.
+│   ├──  controller/    This module is only to gather input (REST/gRPC/console/etc) and pass input as request to service.
+│   │   ├──  http/
+│   │   ├──  grpc/
+│   ├──  service/       This module contain business logic, this module get input request from controller, this module use repository for things related to persistence.
+│   ├──  repository/    This module only for things related to persistence (CRUD database/redis/etc).
+├── go.mod
+└── go.sum
+```
+
 ## Installation
 
 You can install by using go binary.
