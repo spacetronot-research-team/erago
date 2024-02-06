@@ -14,8 +14,8 @@ import (
 func main() {
 	rootCmd := &cobra.Command{
 		Use:               "erago",
-		Short:             "erago is Erajaya CLI generate project",
-		Long:              "erago is Erajaya CLI generate project.",
+		Short:             "Erajaya CLI generate project",
+		Long:              "Erajaya CLI generate project.",
 		CompletionOptions: cobra.CompletionOptions{DisableDefaultCmd: true},
 	}
 
@@ -32,8 +32,8 @@ func main() {
 func getCreateDomainCmd() *cobra.Command {
 	createDomainCmd := &cobra.Command{
 		Use:   "create-domain [domain]",
-		Short: "create-domain will create new domain with the provided domain name",
-		Long:  "create-domain will create new domain with the provided domain name. If no domain name is provided, it defaults to 'hello world'.",
+		Short: "Create new domain with the provided domain name",
+		Long:  "Create new domain with the provided domain name. If no domain name is provided, it defaults to 'hello world'.",
 		Args:  cobra.MaximumNArgs(1),
 		Run:   createdomain.CLI,
 	}
@@ -43,8 +43,8 @@ func getCreateDomainCmd() *cobra.Command {
 func getCreateProjectCmd() *cobra.Command {
 	createProjectCmd := &cobra.Command{
 		Use:   "create-project [project-name] [module-name]",
-		Short: "create-project will create new project with the provided domain name",
-		Long:  "create-project will create new project with the provided domain name.",
+		Short: "Create new project with the provided domain name",
+		Long:  "Create new project with the provided domain name.",
 		Args:  cobra.MinimumNArgs(2),
 		Run:   createproject.CLI,
 	}
@@ -54,8 +54,8 @@ func getCreateProjectCmd() *cobra.Command {
 func getVersionCmd() *cobra.Command {
 	versionCmd := &cobra.Command{
 		Use:   "version",
-		Short: "version will print erago version",
-		Long:  "version will print erago version.",
+		Short: "Print erago version",
+		Long:  "Print erago version.",
 		Args:  cobra.MaximumNArgs(0),
 		Run:   version.CLI,
 	}
@@ -65,8 +65,8 @@ func getVersionCmd() *cobra.Command {
 func getExplainCmd() *cobra.Command {
 	versionCmd := &cobra.Command{
 		Use:   "explain",
-		Short: "explain will explain code architecture",
-		Long:  "explain will explain code architecture.",
+		Short: "Explain code architecture",
+		Long:  "Explain code architecture.",
 		Args:  cobra.MaximumNArgs(0),
 		Run:   explain.CLI,
 	}
