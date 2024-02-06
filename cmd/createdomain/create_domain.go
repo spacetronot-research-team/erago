@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -14,22 +16,63 @@ import (
 
 // CreateDomain is main func to create new domain.
 func CreateDomain(domain string) {
+	log.Println("create domain start")
+
+	log.Println("get module name")
 	moduleName, err := getModuleName()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	log.Println("generate controller template")
 	if err := generateControllerTemplate(domain, moduleName); err != nil {
 		log.Fatal(err)
 	}
 
+	log.Println("generate service template")
 	if err := generateServiceTemplate(domain, moduleName); err != nil {
 		log.Fatal(err)
 	}
 
+	log.Println("generate repository template")
 	if err := generateRepositoryTemplate(domain); err != nil {
 		log.Fatal(err)
 	}
+
+	log.Println("generate mock repository using mockgen")
+	if err := generateMockRepository(domain); err != nil {
+		log.Println("err generate mock repository using mockgen, did you able to run `mockgen`?")
+		log.Println("try to install mockgen:\\ntgo install go.uber.org/mock/mockgen@latest")
+		log.Println("create domain finish without mock repository and service test template")
+		return
+	}
+
+	log.Println("generate service test template")
+	if err := generateServiceTestTemplate(domain, moduleName); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("create domain finish")
+}
+
+func generateMockRepository(domain string) error {
+	domainFileName := strcase.ToSnake(domain)
+
+	source := fmt.Sprintf("-source=%s.go", domainFileName)
+	destination := fmt.Sprintf("-destination=%s", filepath.Join("mock", domainFileName+".go"))
+
+	cmd := exec.Command("mockgen", source, destination, "-package=repository")
+	cmd.Dir = filepath.Join("internal", "repository")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+
+	if string(stdout) != "" {
+		fmt.Println(string(stdout))
+	}
+
+	return nil
 }
 
 func getModuleName() (string, error) {
@@ -69,7 +112,7 @@ func generateControllerTemplate(domain string, moduleName string) error {
 		return fmt.Errorf("err get controller template: %v", err)
 	}
 
-	path := fmt.Sprintf("internal/controller/%s.go", strcase.ToSnake(domain))
+	path := filepath.Join("internal", "controller", strcase.ToSnake(domain)+".go")
 	err = os.WriteFile(path, []byte(controllerTemplate), 0666)
 	if err != nil {
 		return fmt.Errorf("err write controller template: %v", err)
@@ -84,10 +127,25 @@ func generateServiceTemplate(domain string, moduleName string) error {
 		return fmt.Errorf("err get service template: %v", err)
 	}
 
-	path := fmt.Sprintf("internal/service/%s.go", strcase.ToSnake(domain))
+	path := filepath.Join("internal", "service", strcase.ToSnake(domain)+".go")
 	err = os.WriteFile(path, []byte(serviceTemplate), 0666)
 	if err != nil {
 		return fmt.Errorf("err write service template: %v", err)
+	}
+
+	return nil
+}
+
+func generateServiceTestTemplate(domain string, moduleName string) error {
+	serviceTestTemplate, err := template.GteServiceTestTemplate(domain, moduleName)
+	if err != nil {
+		return fmt.Errorf("err get service test template: %v", err)
+	}
+
+	path := filepath.Join("internal", "service", strcase.ToSnake(domain)+"_test.go")
+	err = os.WriteFile(path, []byte(serviceTestTemplate), 0666)
+	if err != nil {
+		return fmt.Errorf("err write service test template: %v", err)
 	}
 
 	return nil
@@ -99,7 +157,7 @@ func generateRepositoryTemplate(domain string) error {
 		return fmt.Errorf("err get repository template: %v", err)
 	}
 
-	path := fmt.Sprintf("internal/repository/%s.go", strcase.ToSnake(domain))
+	path := filepath.Join("internal", "repository", strcase.ToSnake(domain)+".go")
 	err = os.WriteFile(path, []byte(repositoryTemplate), 0666)
 	if err != nil {
 		return fmt.Errorf("err write repository template: %v", err)
