@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -24,18 +25,21 @@ func CreateDomain(domain string) {
 		log.Fatal(err)
 	}
 
+	varErr1 := fmt.Sprintf("%d", rand.Int())
+	varErr2 := fmt.Sprintf("%d", rand.Int())
+
 	log.Println("generate controller template")
-	if err := generateControllerTemplate(domain, moduleName); err != nil {
+	if err := generateControllerTemplate(domain, moduleName, varErr1); err != nil {
 		log.Fatal(err)
 	}
 
 	log.Println("generate service template")
-	if err := generateServiceTemplate(domain, moduleName); err != nil {
+	if err := generateServiceTemplate(domain, moduleName, varErr1, varErr2); err != nil {
 		log.Fatal(err)
 	}
 
 	log.Println("generate repository template")
-	if err := generateRepositoryTemplate(domain); err != nil {
+	if err := generateRepositoryTemplate(domain, varErr1, varErr2); err != nil {
 		log.Fatal(err)
 	}
 
@@ -48,7 +52,7 @@ func CreateDomain(domain string) {
 	}
 
 	log.Println("generate service test template")
-	if err := generateServiceTestTemplate(domain, moduleName); err != nil {
+	if err := generateServiceTestTemplate(domain, moduleName, varErr1, varErr2); err != nil {
 		log.Fatal(err)
 	}
 
@@ -64,9 +68,9 @@ func generateMockRepository(domain string) error {
 	domainFileName := strcase.ToSnake(domain)
 
 	source := fmt.Sprintf("-source=%s.go", domainFileName)
-	destination := fmt.Sprintf("-destination=%s", filepath.Join("mock", domainFileName+".go"))
+	destination := fmt.Sprintf("-destination=%s", filepath.Join("mockrepository", domainFileName+".go"))
 
-	cmd := exec.Command("mockgen", source, destination, "-package=repository")
+	cmd := exec.Command("mockgen", source, destination, "-package=mockrepository")
 	cmd.Dir = filepath.Join("internal", "repository")
 	stdout, err := cmd.Output()
 	if err != nil {
@@ -111,8 +115,8 @@ func getModuleName() (string, error) {
 	return "", errors.New("module name not found in go.mod file")
 }
 
-func generateControllerTemplate(domain string, moduleName string) error {
-	controllerTemplate, err := template.GetControllerTemplate(domain, moduleName)
+func generateControllerTemplate(domain string, moduleName string, varErr1 string) error {
+	controllerTemplate, err := template.GetControllerTemplate(domain, moduleName, varErr1)
 	if err != nil {
 		return fmt.Errorf("err get controller template: %v", err)
 	}
@@ -126,8 +130,8 @@ func generateControllerTemplate(domain string, moduleName string) error {
 	return nil
 }
 
-func generateServiceTemplate(domain string, moduleName string) error {
-	serviceTemplate, err := template.GetServiceTemplate(domain, moduleName)
+func generateServiceTemplate(domain string, moduleName string, varErr1 string, varErr2 string) error {
+	serviceTemplate, err := template.GetServiceTemplate(domain, moduleName, varErr1, varErr2)
 	if err != nil {
 		return fmt.Errorf("err get service template: %v", err)
 	}
@@ -141,8 +145,8 @@ func generateServiceTemplate(domain string, moduleName string) error {
 	return nil
 }
 
-func generateServiceTestTemplate(domain string, moduleName string) error {
-	serviceTestTemplate, err := template.GteServiceTestTemplate(domain, moduleName)
+func generateServiceTestTemplate(domain string, moduleName string, varErr1 string, varErr2 string) error {
+	serviceTestTemplate, err := template.GteServiceTestTemplate(domain, moduleName, varErr1, varErr2)
 	if err != nil {
 		return fmt.Errorf("err get service test template: %v", err)
 	}
@@ -156,8 +160,8 @@ func generateServiceTestTemplate(domain string, moduleName string) error {
 	return nil
 }
 
-func generateRepositoryTemplate(domain string) error {
-	repositoryTemplate, err := template.GetRepositoryTemplate(domain)
+func generateRepositoryTemplate(domain string, varErr1 string, varErr2 string) error {
+	repositoryTemplate, err := template.GetRepositoryTemplate(domain, varErr1, varErr2)
 	if err != nil {
 		return fmt.Errorf("err get repository template: %v", err)
 	}

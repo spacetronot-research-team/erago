@@ -8,8 +8,8 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-func GteServiceTestTemplate(domain string, moduleName string) (string, error) {
-	serviceTestConfig := NewServiceTestConfig(domain)
+func GteServiceTestTemplate(domain string, moduleName string, varErr1 string, varErr2 string) (string, error) {
+	serviceTestConfig := NewServiceTestConfig(domain, varErr1, varErr2)
 	serviceTestConfig.ModuleName = moduleName
 
 	serviceTestTemplate, err := template.New("serviceTestTemplate").Parse(serviceTestTemplate)
@@ -30,13 +30,17 @@ type ServiceTestConfig struct {
 	DomainCamelCase  string
 	DomainShort      string
 	ModuleName       string
+	VarErr1          string
+	VarErr2          string
 }
 
-func NewServiceTestConfig(domain string) ServiceTestConfig {
+func NewServiceTestConfig(domain string, varErr1 string, varErr2 string) ServiceTestConfig {
 	return ServiceTestConfig{
 		DomainPascalCase: strcase.ToCamel(domain),
 		DomainCamelCase:  strcase.ToLowerCamel(domain),
 		DomainShort:      getDomainShort(domain),
+		VarErr1:          varErr1,
+		VarErr2:          varErr2,
 	}
 }
 
@@ -46,14 +50,14 @@ import (
 	"context"
 	"testing"
 
+	"{{.ModuleName}}/internal/repository/mockrepository"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
-	repository "{{.ModuleName}}/internal/repository/mock"
 )
 
 func Test_{{.DomainCamelCase}}Service_Bar(t *testing.T) {
 	type fields struct {
-		{{.DomainCamelCase}}Repository *repository.Mock{{.DomainPascalCase}}
+		{{.DomainCamelCase}}Repository *mockrepository.Mock{{.DomainPascalCase}}
 	}
 	type args struct {
 		ctx context.Context
@@ -62,7 +66,7 @@ func Test_{{.DomainCamelCase}}Service_Bar(t *testing.T) {
 		name    string
 		mock    func(f fields)
 		args    args
-		wantErr bool
+		wantErr error
 	}{
 		{
 			name: "bar err foo",
@@ -73,7 +77,7 @@ func Test_{{.DomainCamelCase}}Service_Bar(t *testing.T) {
 			args: args{
 				ctx: nil,
 			},
-			wantErr: true,
+			wantErr: Err{{.VarErr1}},
 		},
 		{
 			name: "bar err baz",
@@ -87,7 +91,7 @@ func Test_{{.DomainCamelCase}}Service_Bar(t *testing.T) {
 			args: args{
 				ctx: nil,
 			},
-			wantErr: true,
+			wantErr: Err{{.VarErr2}},
 		},
 		{
 			name: "bar success",
@@ -101,7 +105,7 @@ func Test_{{.DomainCamelCase}}Service_Bar(t *testing.T) {
 			args: args{
 				ctx: nil,
 			},
-			wantErr: false,
+			wantErr: nil,
 		},
 	}
 	for _, tt := range tests {
@@ -110,7 +114,7 @@ func Test_{{.DomainCamelCase}}Service_Bar(t *testing.T) {
 			defer ctrl.Finish()
 
 			f := fields{
-				{{.DomainCamelCase}}Repository: repository.NewMock{{.DomainPascalCase}}(ctrl),
+				{{.DomainCamelCase}}Repository: mockrepository.NewMock{{.DomainPascalCase}}(ctrl),
 			}
 			tt.mock(f)
 
@@ -119,11 +123,7 @@ func Test_{{.DomainCamelCase}}Service_Bar(t *testing.T) {
 			}
 
 			err := {{.DomainShort}}s.Bar(tt.args.ctx)
-			if tt.wantErr {
-				assert.NotNil(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
+			assert.ErrorIs(t, err, tt.wantErr)
 		})
 	}
 }

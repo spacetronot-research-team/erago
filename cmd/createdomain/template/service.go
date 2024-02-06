@@ -8,8 +8,8 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-func GetServiceTemplate(domain string, moduleName string) (string, error) {
-	serviceConfig := NewServiceConfig(domain)
+func GetServiceTemplate(domain string, moduleName string, varErr1 string, varErr2 string) (string, error) {
+	serviceConfig := NewServiceConfig(domain, varErr1, varErr2)
 	serviceConfig.ModuleName = moduleName
 
 	serviceTemplate, err := template.New("serviceTemplate").Parse(serviceTemplate)
@@ -29,13 +29,17 @@ type ServiceConfig struct {
 	DomainCamelCase  string
 	DomainShort      string
 	ModuleName       string
+	VarErr1          string
+	VarErr2          string
 }
 
-func NewServiceConfig(domain string) ServiceConfig {
+func NewServiceConfig(domain string, varErr1 string, varErr2 string) ServiceConfig {
 	return ServiceConfig{
 		DomainPascalCase: strcase.ToCamel(domain),
 		DomainCamelCase:  strcase.ToLowerCamel(domain),
 		DomainShort:      getDomainShort(domain),
+		VarErr1:          varErr1,
+		VarErr2:          varErr2,
 	}
 }
 
@@ -43,9 +47,14 @@ var serviceTemplate = `package service
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"{{.ModuleName}}/internal/repository"
+)
+
+var (
+	Err{{.VarErr1}} = errors.New("err jasdfsefs")
+	Err{{.VarErr2}}  = errors.New("err jasdf")
 )
 
 type {{.DomainPascalCase}} interface {
@@ -66,11 +75,11 @@ func New{{.DomainPascalCase}}Service({{.DomainCamelCase}}Repository repository.{
 // Bar blablabla.
 func ({{.DomainShort}}s *{{.DomainCamelCase}}Service) Bar(ctx context.Context) error {
 	if err := {{.DomainShort}}s.{{.DomainCamelCase}}Repository.Foo(ctx); err != nil {
-		return fmt.Errorf("err babibu: %v", err)
+		return errors.Join(err, Err{{.VarErr1}})
 	}
 
 	if err := {{.DomainShort}}s.{{.DomainCamelCase}}Repository.Baz(ctx); err != nil {
-		return fmt.Errorf("err zzzzzz: %v", err)
+		return errors.Join(err, Err{{.VarErr2}})
 	}
 
 	return nil
