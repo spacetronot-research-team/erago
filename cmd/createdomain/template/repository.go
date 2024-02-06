@@ -28,6 +28,7 @@ type RepositoryConfig struct {
 	DomainPascalCase string
 	DomainCamelCase  string
 	DomainShort      string
+	DomainSnakeCase  string
 }
 
 func NewRepositoryConfig(domain string) RepositoryConfig {
@@ -35,6 +36,7 @@ func NewRepositoryConfig(domain string) RepositoryConfig {
 		DomainPascalCase: strcase.ToCamel(domain),
 		DomainCamelCase:  strcase.ToLowerCamel(domain),
 		DomainShort:      getDomainShort(domain),
+		DomainSnakeCase:  strcase.ToSnake(domain),
 	}
 }
 
@@ -46,7 +48,7 @@ import (
 	"gorm.io/gorm"
 )
 
-//go:generate mockgen -source=category.go -destination=mock/category.go -package=repository
+//go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mock/{{.DomainSnakeCase}}.go -package=repository
 
 type {{.DomainPascalCase}} interface {
 	// Foo blablabla.
