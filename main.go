@@ -41,10 +41,10 @@ func getCreateDomainCmd() *cobra.Command {
 
 func getCreateProjectCmd() *cobra.Command {
 	createProjectCmd := &cobra.Command{
-		Use:   "create-project [project-name] [module-name]",
-		Short: "Create new project with the provided domain name",
-		Long:  "Create new project with the provided domain name.",
-		Args:  cobra.MinimumNArgs(2),
+		Use:   "create-project [module-name]",
+		Short: "Create new project with the provided module name",
+		Long:  "Create new project with the provided module name.",
+		Args:  cobra.MinimumNArgs(1),
 		Run:   createproject.CLI,
 	}
 	return createProjectCmd

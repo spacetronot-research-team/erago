@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spacetronot-research-team/erago/cmd/createdomain"
@@ -13,7 +14,19 @@ import (
 )
 
 // CreateProject is main func to create new project.
-func CreateProject(projectName string, moduleName string) {
+func CreateProject(moduleName string) {
+	moduleNameSplitted := strings.Split(moduleName, "/")
+	lastIndex := len(moduleNameSplitted) - 1
+	projectName := moduleNameSplitted[lastIndex]
+
+	_, err := os.Stat(projectName)
+	if err == nil {
+		err = fmt.Errorf("dir %s already exist", projectName)
+		logrus.Fatal(err)
+	} else if !os.IsNotExist(err) {
+		logrus.Fatal(fmt.Errorf("err get dir info: %v", err))
+	}
+
 	logrus.Info("create project start")
 
 	logrus.Info("create project dir")
