@@ -80,7 +80,7 @@ func CreateProject(projectName string, moduleName string) {
 		logrus.Fatal(fmt.Errorf("err run go mod tidy: %v", err))
 	}
 
-	logrus.Info("create project finish, go to your project:\n\tcd", projectPath)
+	logrus.Info("create project finish, go to your project:\n\tcd ", projectPath)
 }
 
 func runGoModInit(moduleName string, projectPath string) error {
