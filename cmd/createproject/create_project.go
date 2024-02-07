@@ -115,7 +115,13 @@ func CreateProject(moduleName string) {
 	}
 
 	logrus.Info("create domain hello world")
-	createdomain.CreateDomain("hello world")
+	domain := "hello world"
+	createdomain.CreateDomain(domain)
+
+	logrus.Info("generate router template")
+	if err := generateRouterTemplate(domain); err != nil {
+		logrus.Fatal(fmt.Errorf("err generate router template: %v", err))
+	}
 
 	logrus.Info("run go mod tidy")
 	if err := gomod.RunGoModTidy(); err != nil {
@@ -123,6 +129,20 @@ func CreateProject(moduleName string) {
 	}
 
 	logrus.Info("create project finish, go to your project:\n\tcd ", projectPath)
+}
+
+func generateRouterTemplate(domain string) error {
+	routerTemplate, err := template.GetRouterTemplate(domain)
+	if err != nil {
+		return fmt.Errorf("err get router template: %v", err)
+	}
+
+	path := filepath.Join("internal", "router", "router.go")
+	if err := os.WriteFile(path, []byte(routerTemplate), os.ModePerm); err != nil {
+		return fmt.Errorf("err write router.go: %v", err)
+	}
+
+	return nil
 }
 
 func createErrorsJSON(projectPath string) error {
