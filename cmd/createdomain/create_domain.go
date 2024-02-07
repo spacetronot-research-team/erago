@@ -207,9 +207,6 @@ func generateRepositoryTemplate(domain string, varErr1 string, varErr2 string) e
 }
 
 func generateInjectionTemplate(domain string, moduleName string) error {
-	// TODO: check if file exists
-	// TODO: if exists, append
-	// TODO: if not, create new
 	path := filepath.Join("internal", "router", "injection.go")
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
