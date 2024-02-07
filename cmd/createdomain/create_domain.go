@@ -40,14 +40,18 @@ func CreateDomain(domain string) {
 		logrus.Fatal(err)
 	}
 
-	// TODO: sudah bisa generate error with unique code, dan sudah generate json file untuk ditampilkan di frontend.
-	// TODO: next, please gabungkan semua json file error code jadi 1 file json aja, errors.json
-
 	logrus.Info("generate mock repository using mockgen")
 	if err := generateMockRepository(domain); err != nil {
 		logrus.Warn("err generate mock repository using mockgen, did you able to run `mockgen`?")
 		logrus.Warn("try to install mockgen:\n\tgo install go.uber.org/mock/mockgen@latest")
 		logrus.Warn("create domain finish without mock repository and service test template")
+
+		fileName := strcase.ToSnake(domain)
+		logrus.Info(fmt.Sprintf("domain %s controller created:\n\t%s:0", domain, filepath.Join("internal", "controller", "http", fileName+".go:0")))
+		logrus.Info(fmt.Sprintf("domain %s service created:\n\t%s:0", domain, filepath.Join("internal", "service", fileName+".go:0")))
+		logrus.Info(fmt.Sprintf("domain %s repository created:\n\t%s:0", domain, filepath.Join("internal", "repository", fileName+".go:0")))
+		logrus.Info(fmt.Sprintf("domain %s injection created:\n\t%s:0", domain, filepath.Join("internal", "router", "injection.go:0")))
+
 		return
 	}
 
@@ -67,6 +71,13 @@ func CreateDomain(domain string) {
 	}
 
 	logrus.Info("create domain finish")
+
+	fileName := strcase.ToSnake(domain)
+	logrus.Info(fmt.Sprintf("domain %s controller created:\n\t%s:0", domain, filepath.Join("internal", "controller", "http", fileName+".go:0")))
+	logrus.Info(fmt.Sprintf("domain %s service created:\n\t%s:0", domain, filepath.Join("internal", "service", fileName+".go:0")))
+	logrus.Info(fmt.Sprintf("domain %s service test created:\n\t%s:0", domain, filepath.Join("internal", "service", fileName+"_test.go:0")))
+	logrus.Info(fmt.Sprintf("domain %s repository created:\n\t%s:0", domain, filepath.Join("internal", "repository", fileName+".go:0")))
+	logrus.Info(fmt.Sprintf("domain %s injection created:\n\t%s:0", domain, filepath.Join("internal", "router", "injection.go:0")))
 }
 
 func generateMockRepository(domain string) error {
