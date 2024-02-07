@@ -6,10 +6,15 @@ import (
 	"text/template"
 
 	"github.com/iancoleman/strcase"
+	"github.com/spacetronot-research-team/erago/common/gomod"
 )
 
-func GteServiceTestTemplate(domain string, moduleName string, varErr1 string, varErr2 string) (string, error) {
+func GteServiceTestTemplate(domain string, varErr1 string, varErr2 string) (string, error) {
 	serviceTestConfig := NewServiceTestConfig(domain, varErr1, varErr2)
+	moduleName, err := gomod.GetModuleName()
+	if err != nil {
+		return "", fmt.Errorf("err get module name: %v", err)
+	}
 	serviceTestConfig.ModuleName = moduleName
 
 	serviceTestTemplate, err := template.New("serviceTestTemplate").Parse(serviceTestTemplate)

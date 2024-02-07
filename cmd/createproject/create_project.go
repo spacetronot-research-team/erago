@@ -47,6 +47,11 @@ func CreateProject(projectName string, moduleName string) {
 		logrus.Fatal(fmt.Errorf("err mkdir projectPath/internal/router: %v", err))
 	}
 
+	logrus.Info("create errors.json in projectDir/docs")
+	if err := createErrorsJSON(projectPath); err != nil {
+		logrus.Fatal(fmt.Errorf("err create errors.json in projectDir/docs: %v", err))
+	}
+
 	logrus.Info("create database dir in project dir")
 	if err := os.MkdirAll(filepath.Join(projectPath, "database"), os.ModePerm); err != nil {
 		logrus.Fatal(fmt.Errorf("err mkdir projectPath/database: %v", err))
@@ -100,6 +105,19 @@ func CreateProject(projectName string, moduleName string) {
 	}
 
 	logrus.Info("create project finish, go to your project:\n\tcd ", projectPath)
+}
+
+func createErrorsJSON(projectPath string) error {
+	if err := os.MkdirAll(filepath.Join(projectPath, "docs"), os.ModePerm); err != nil {
+		return fmt.Errorf("err mkdir projectPath/docs: %v", err)
+	}
+
+	path := filepath.Join(projectPath, "docs", "errors.json")
+	if err := os.WriteFile(path, []byte("{}"), os.ModePerm); err != nil {
+		return fmt.Errorf("err write errors.json: %v", err)
+	}
+
+	return nil
 }
 
 func generateSchemaMigrationExample(projectPath string) error {

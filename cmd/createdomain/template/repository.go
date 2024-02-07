@@ -3,9 +3,14 @@ package template
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 	"text/template"
 
 	"github.com/iancoleman/strcase"
+	"github.com/sirupsen/logrus"
+	"github.com/spacetronot-research-team/erago/common/gomod"
+	"github.com/spacetronot-research-team/erago/common/osfile"
+	"github.com/spacetronot-research-team/erago/common/random"
 )
 
 func GetRepositoryTemplate(domain string, varErr1 string, varErr2 string) (string, error) {
@@ -31,9 +36,24 @@ type RepositoryConfig struct {
 	DomainSnakeCase  string
 	VarErr1          string
 	VarErr2          string
+	UniqueErrCode1   string
+	UniqueErrCode2   string
 }
 
 func NewRepositoryConfig(domain string, varErr1 string, varErr2 string) RepositoryConfig {
+	projectName, err := gomod.GetProjectNameFromModule()
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err get project name from module: %v", err))
+	}
+
+	uniqueErrCode1 := fmt.Sprintf("%s@%s", projectName, random.String())
+	uniqueErrCode2 := fmt.Sprintf("%s@%s", projectName, random.String())
+	jsonFilePath := filepath.Join("docs", "errors.json")
+	err = osfile.AddUniqueErrCodeToErrorsJSON(jsonFilePath, uniqueErrCode1, uniqueErrCode2)
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err add unique err code to errors.json: %v", err))
+	}
+
 	return RepositoryConfig{
 		DomainPascalCase: strcase.ToCamel(domain),
 		DomainCamelCase:  strcase.ToLowerCamel(domain),
@@ -41,6 +61,8 @@ func NewRepositoryConfig(domain string, varErr1 string, varErr2 string) Reposito
 		DomainSnakeCase:  strcase.ToSnake(domain),
 		VarErr1:          varErr1,
 		VarErr2:          varErr2,
+		UniqueErrCode1:   uniqueErrCode1,
+		UniqueErrCode2:   uniqueErrCode2,
 	}
 }
 
@@ -56,8 +78,8 @@ import (
 //go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mockrepository/{{.DomainSnakeCase}}.go -package=mockrepository
 
 var (
-	Err{{.VarErr1}}  = errors.New("err blabla")
-	Err{{.VarErr2}} = errors.New("err babibu")
+	Err{{.VarErr1}} = errors.New("[{{.UniqueErrCode1}}] err blabla")
+	Err{{.VarErr2}} = errors.New("[{{.UniqueErrCode2}}] err babibu")
 )
 
 type {{.DomainPascalCase}} interface {

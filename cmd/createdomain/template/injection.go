@@ -6,10 +6,15 @@ import (
 	"text/template"
 
 	"github.com/iancoleman/strcase"
+	"github.com/spacetronot-research-team/erago/common/gomod"
 )
 
-func GetInjectionTemplate(domain string, moduleName string) (string, error) {
+func GetInjectionTemplate(domain string) (string, error) {
 	injectionConfig := NewInjectionConfig(domain)
+	moduleName, err := gomod.GetModuleName()
+	if err != nil {
+		return "", fmt.Errorf("err get module name: %v", err)
+	}
 	injectionConfig.ModuleName = moduleName
 
 	injectionTemplate, err := template.New("injectionTemplate").Parse(injectionTemplate)

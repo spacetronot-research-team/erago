@@ -1,41 +1,32 @@
 package createdomain
 
 import (
-	"bufio"
-	"errors"
 	"fmt"
-	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 
 	"github.com/iancoleman/strcase"
 	"github.com/sirupsen/logrus"
 	"github.com/spacetronot-research-team/erago/cmd/createdomain/template"
 	"github.com/spacetronot-research-team/erago/common/gomod"
+	"github.com/spacetronot-research-team/erago/common/random"
 )
 
 // CreateDomain is main func to create new domain.
 func CreateDomain(domain string) {
 	logrus.Info("create domain start")
 
-	logrus.Info("get module name")
-	moduleName, err := getModuleName()
-	if err != nil {
-		logrus.Fatal(err)
-	}
-
-	varErr1 := randString()
-	varErr2 := randString()
+	varErr1 := random.StringPascal()
+	varErr2 := random.StringPascal()
 
 	logrus.Info("generate controller template")
-	if err := generateControllerTemplate(domain, moduleName, varErr1); err != nil {
+	if err := generateControllerTemplate(domain, varErr1); err != nil {
 		logrus.Fatal(err)
 	}
 
 	logrus.Info("generate service template")
-	if err := generateServiceTemplate(domain, moduleName, varErr1, varErr2); err != nil {
+	if err := generateServiceTemplate(domain, varErr1, varErr2); err != nil {
 		logrus.Fatal(err)
 	}
 
@@ -45,9 +36,12 @@ func CreateDomain(domain string) {
 	}
 
 	logrus.Info("generate injection")
-	if err := generateInjectionTemplate(domain, moduleName); err != nil {
+	if err := generateInjectionTemplate(domain); err != nil {
 		logrus.Fatal(err)
 	}
+
+	// TODO: sudah bisa generate error with unique code, dan sudah generate json file untuk ditampilkan di frontend.
+	// TODO: next, please gabungkan semua json file error code jadi 1 file json aja, errors.json
 
 	logrus.Info("generate mock repository using mockgen")
 	if err := generateMockRepository(domain); err != nil {
@@ -58,7 +52,7 @@ func CreateDomain(domain string) {
 	}
 
 	logrus.Info("generate service test template")
-	if err := generateServiceTestTemplate(domain, moduleName, varErr1, varErr2); err != nil {
+	if err := generateServiceTestTemplate(domain, varErr1, varErr2); err != nil {
 		logrus.Fatal(err)
 	}
 
@@ -115,39 +109,8 @@ func generateMockService(domain string) error {
 	return nil
 }
 
-func getModuleName() (string, error) {
-	file, err := os.Open("go.mod")
-	if err != nil {
-		return "", fmt.Errorf("err open go.mod: %v", err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		line := scanner.Text()
-
-		isLineStartsWithModule := strings.HasPrefix(line, "module ")
-		if !isLineStartsWithModule {
-			continue
-		}
-
-		parts := strings.Split(line, " ")
-		if len(parts) >= 2 {
-			moduleName := parts[1]
-			return moduleName, nil
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return "", fmt.Errorf("scanner err: %v", err)
-	}
-
-	return "", errors.New("module name not found in go.mod file")
-}
-
-func generateControllerTemplate(domain string, moduleName string, varErr1 string) error {
-	controllerTemplate, err := template.GetControllerTemplate(domain, moduleName, varErr1)
+func generateControllerTemplate(domain string, varErr1 string) error {
+	controllerTemplate, err := template.GetControllerTemplate(domain, varErr1)
 	if err != nil {
 		return fmt.Errorf("err get controller template: %v", err)
 	}
@@ -161,8 +124,8 @@ func generateControllerTemplate(domain string, moduleName string, varErr1 string
 	return nil
 }
 
-func generateServiceTemplate(domain string, moduleName string, varErr1 string, varErr2 string) error {
-	serviceTemplate, err := template.GetServiceTemplate(domain, moduleName, varErr1, varErr2)
+func generateServiceTemplate(domain string, varErr1 string, varErr2 string) error {
+	serviceTemplate, err := template.GetServiceTemplate(domain, varErr1, varErr2)
 	if err != nil {
 		return fmt.Errorf("err get service template: %v", err)
 	}
@@ -176,8 +139,8 @@ func generateServiceTemplate(domain string, moduleName string, varErr1 string, v
 	return nil
 }
 
-func generateServiceTestTemplate(domain string, moduleName string, varErr1 string, varErr2 string) error {
-	serviceTestTemplate, err := template.GteServiceTestTemplate(domain, moduleName, varErr1, varErr2)
+func generateServiceTestTemplate(domain string, varErr1 string, varErr2 string) error {
+	serviceTestTemplate, err := template.GteServiceTestTemplate(domain, varErr1, varErr2)
 	if err != nil {
 		return fmt.Errorf("err get service test template: %v", err)
 	}
@@ -206,7 +169,7 @@ func generateRepositoryTemplate(domain string, varErr1 string, varErr2 string) e
 	return nil
 }
 
-func generateInjectionTemplate(domain string, moduleName string) error {
+func generateInjectionTemplate(domain string) error {
 	path := filepath.Join("internal", "router", "injection.go")
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
@@ -214,7 +177,7 @@ func generateInjectionTemplate(domain string, moduleName string) error {
 			return fmt.Errorf("err open injection.go file: %err", err)
 		}
 
-		if err = generateNewInjectionTemplate(domain, moduleName, path); err != nil {
+		if err = generateNewInjectionTemplate(domain, path); err != nil {
 			return fmt.Errorf("err generate new injection template: %v", err)
 		}
 
@@ -234,8 +197,8 @@ func generateInjectionTemplate(domain string, moduleName string) error {
 	return nil
 }
 
-func generateNewInjectionTemplate(domain string, moduleName string, path string) error {
-	injectionTemplate, err := template.GetInjectionTemplate(domain, moduleName)
+func generateNewInjectionTemplate(domain string, path string) error {
+	injectionTemplate, err := template.GetInjectionTemplate(domain)
 	if err != nil {
 		return fmt.Errorf("err get injection template: %v", err)
 	}
@@ -244,14 +207,4 @@ func generateNewInjectionTemplate(domain string, moduleName string, path string)
 		return fmt.Errorf("err write injection template: %v", err)
 	}
 	return nil
-}
-
-var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz")
-
-func randString() string {
-	b := make([]rune, 5)
-	for i := range b {
-		b[i] = letterRunes[rand.Intn(len(letterRunes))]
-	}
-	return strcase.ToCamel(string(b))
 }

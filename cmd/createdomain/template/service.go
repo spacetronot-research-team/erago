@@ -3,13 +3,22 @@ package template
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 	"text/template"
 
 	"github.com/iancoleman/strcase"
+	"github.com/sirupsen/logrus"
+	"github.com/spacetronot-research-team/erago/common/gomod"
+	"github.com/spacetronot-research-team/erago/common/osfile"
+	"github.com/spacetronot-research-team/erago/common/random"
 )
 
-func GetServiceTemplate(domain string, moduleName string, varErr1 string, varErr2 string) (string, error) {
+func GetServiceTemplate(domain string, varErr1 string, varErr2 string) (string, error) {
 	serviceConfig := NewServiceConfig(domain, varErr1, varErr2)
+	moduleName, err := gomod.GetModuleName()
+	if err != nil {
+		return "", fmt.Errorf("err get module name: %v", err)
+	}
 	serviceConfig.ModuleName = moduleName
 
 	serviceTemplate, err := template.New("serviceTemplate").Parse(serviceTemplate)
@@ -32,9 +41,24 @@ type ServiceConfig struct {
 	ModuleName       string
 	VarErr1          string
 	VarErr2          string
+	UniqueErrCode1   string
+	UniqueErrCode2   string
 }
 
 func NewServiceConfig(domain string, varErr1 string, varErr2 string) ServiceConfig {
+	projectName, err := gomod.GetProjectNameFromModule()
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err get project name from module: %v", err))
+	}
+
+	uniqueErrCode1 := fmt.Sprintf("%s@%s", projectName, random.String())
+	uniqueErrCode2 := fmt.Sprintf("%s@%s", projectName, random.String())
+	jsonFilePath := filepath.Join("docs", "errors.json")
+	err = osfile.AddUniqueErrCodeToErrorsJSON(jsonFilePath, uniqueErrCode1, uniqueErrCode2)
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err add unique err code to errors.json: %v", err))
+	}
+
 	return ServiceConfig{
 		DomainPascalCase: strcase.ToCamel(domain),
 		DomainCamelCase:  strcase.ToLowerCamel(domain),
@@ -42,6 +66,8 @@ func NewServiceConfig(domain string, varErr1 string, varErr2 string) ServiceConf
 		DomainSnakeCase:  strcase.ToSnake(domain),
 		VarErr1:          varErr1,
 		VarErr2:          varErr2,
+		UniqueErrCode1:   uniqueErrCode1,
+		UniqueErrCode2:   uniqueErrCode2,
 	}
 }
 
@@ -57,8 +83,8 @@ import (
 //go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mockservice/{{.DomainSnakeCase}}.go -package=mockservice
 
 var (
-	Err{{.VarErr1}} = errors.New("err jasdfsefs")
-	Err{{.VarErr2}}  = errors.New("err jasdf")
+	Err{{.VarErr1}} = errors.New("[{{.UniqueErrCode1}}] err jasdfsefs")
+	Err{{.VarErr2}} = errors.New("[{{.UniqueErrCode2}}] err jasdf")
 )
 
 type {{.DomainPascalCase}} interface {

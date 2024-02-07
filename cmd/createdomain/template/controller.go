@@ -3,13 +3,22 @@ package template
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 	"text/template"
 
 	"github.com/iancoleman/strcase"
+	"github.com/sirupsen/logrus"
+	"github.com/spacetronot-research-team/erago/common/gomod"
+	"github.com/spacetronot-research-team/erago/common/osfile"
+	"github.com/spacetronot-research-team/erago/common/random"
 )
 
-func GetControllerTemplate(domain string, moduleName string, varErr1 string) (string, error) {
+func GetControllerTemplate(domain string, varErr1 string) (string, error) {
 	controllerConfig := NewControllerConfig(domain, varErr1)
+	moduleName, err := gomod.GetModuleName()
+	if err != nil {
+		return "", fmt.Errorf("err get module name: %v", err)
+	}
 	controllerConfig.ModuleName = moduleName
 
 	controllerTemplate, err := template.New("controllerTemplate").Parse(controllerTemplate)
@@ -31,14 +40,28 @@ type ControllerConfig struct {
 	DomainShort      string
 	ModuleName       string
 	VarErr1          string
+	UniqueErrCode1   string
 }
 
 func NewControllerConfig(domain string, varErr1 string) ControllerConfig {
+	projectName, err := gomod.GetProjectNameFromModule()
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err get project name from module: %v", err))
+	}
+
+	uniqueErrCode1 := fmt.Sprintf("%s@%s", projectName, random.String())
+	jsonFilePath := filepath.Join("docs", "errors.json")
+	err = osfile.AddUniqueErrCodeToErrorsJSON(jsonFilePath, uniqueErrCode1)
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err add unique err code to errors.json: %v", err))
+	}
+
 	return ControllerConfig{
 		DomainPascalCase: strcase.ToCamel(domain),
 		DomainCamelCase:  strcase.ToLowerCamel(domain),
 		DomainShort:      getDomainShort(domain),
 		VarErr1:          varErr1,
+		UniqueErrCode1:   uniqueErrCode1,
 	}
 }
 
@@ -53,7 +76,7 @@ import (
 )
 
 var (
-	Err{{.VarErr1}} = errors.New("err jklasjd")
+	Err{{.VarErr1}} = errors.New("[{{.UniqueErrCode1}}] err jklasjd")
 )
 
 type {{.DomainPascalCase}}Controller struct {
