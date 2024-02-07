@@ -7,13 +7,25 @@ func Explain() {
 }
 
 var explainText = `
-├── cmd/                Initial stage of the application will run.
-├── internal/           Core package of the application and contains the implementation of various business logic.
-│   ├──  controller/    This package is only to gather input (REST/gRPC/console/etc) and pass input as request to service.
-│   │   ├──  http/
-│   │   ├──  grpc/
-│   ├──  service/       This package contain business logic, this package get input request from controller, this package use repository for things related to persistence.
-│   ├──  repository/    This package only for things related to persistence (CRUD database/redis/etc).
+├── cmd/
+│   ├── main.go             Initial stage of the application will run.
+├── database/
+│   ├── migrate/
+│   │   ├── up.go           Database migrate up, 'go run database/migrate/up.go'.
+│   ├── schema_migration/   Contain database migrate sql file.
+├── docs/
+│   ├── errors.json         Contain all errors list to be deplayed by frontend.
+├── internal/
+│   ├── controller/         Contain things related to gather input (REST/gRPC/console/etc) and pass input as request to service.
+│   │   ├── http/
+│   │   ├── grpc/
+│   ├── repository/         Contain things related to persistence (CRUD database/redis/etc).
+│   │   ├── mockrepository/
+│   ├── router/
+│   │   ├── injection.go    Contain dependency injection from controller to service to repository.
+│   ├── service/            Contain business logic, this package get input request from controller, this package use repository for things related to persistence.
+│   │   ├── mockservice/
 ├── go.mod
 └── go.sum
+└── README.md
 `

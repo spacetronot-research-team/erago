@@ -4,15 +4,27 @@ Erajaya CLI generate project.
 ![erago](https://github.com/spacetronot-research-team/erago/assets/57469556/10dc6e4c-25e7-4b48-bb9e-1e34348b8012)
 
 ```
-├── cmd/                Initial stage of the application will run.
-├── internal/           Core package of the application and contains the implementation of various business logic.
-│   ├──  controller/    This package is only to gather input (REST/gRPC/console/etc) and pass input as request to service.
-│   │   ├──  http/
-│   │   ├──  grpc/
-│   ├──  service/       This package contain business logic, this package get input request from controller, this package use repository for things related to persistence.
-│   ├──  repository/    This package only for things related to persistence (CRUD database/redis/etc).
+├── cmd/
+│   ├── main.go             Initial stage of the application will run.
+├── database/
+│   ├── migrate/
+│   │   ├── up.go           Database migrate up, 'go run database/migrate/up.go'.
+│   ├── schema_migration/   Contain database migrate sql file.
+├── docs/
+│   ├── errors.json         Contain all errors list to be deplayed by frontend.
+├── internal/
+│   ├── controller/         Contain things related to gather input (REST/gRPC/console/etc) and pass input as request to service.
+│   │   ├── http/
+│   │   ├── grpc/
+│   ├── repository/         Contain things related to persistence (CRUD database/redis/etc).
+│   │   ├── mockrepository/
+│   ├── router/
+│   │   ├── injection.go    Contain dependency injection from controller to service to repository.
+│   ├── service/            Contain business logic, this package get input request from controller, this package use repository for things related to persistence.
+│   │   ├── mockservice/
 ├── go.mod
 └── go.sum
+└── README.md
 ```
 
 ## Installation
@@ -26,7 +38,7 @@ go install github.com/spacetronot-research-team/erago@latest
 or you can define your prefered version.
 
 ```shell
-go install github.com/spacetronot-research-team/erago@v0.0.22
+go install github.com/spacetronot-research-team/erago@v0.0.23
 ```
 
 Or you can download erago binary from [release page](https://github.com/spacetronot-research-team/erago/releases).
