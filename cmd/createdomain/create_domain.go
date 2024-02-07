@@ -26,8 +26,8 @@ func CreateDomain(domain string) {
 		logrus.Fatal(err)
 	}
 
-	varErr1 := fmt.Sprintf("%d", rand.Int())
-	varErr2 := fmt.Sprintf("%d", rand.Int())
+	varErr1 := randString()
+	varErr2 := randString()
 
 	logrus.Info("generate controller template")
 	if err := generateControllerTemplate(domain, moduleName, varErr1); err != nil {
@@ -244,4 +244,14 @@ func generateNewInjectionTemplate(domain string, moduleName string, path string)
 		return fmt.Errorf("err write injection template: %v", err)
 	}
 	return nil
+}
+
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz")
+
+func randString() string {
+	b := make([]rune, 5)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return strcase.ToCamel(string(b))
 }
