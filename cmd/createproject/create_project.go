@@ -57,6 +57,25 @@ func CreateProject(projectName string, moduleName string) {
 		logrus.Fatal(fmt.Errorf("err write file projectPath/database/open.go: %v", err))
 	}
 
+	logrus.Info("create migrate dir in database dir")
+	if err := os.MkdirAll(filepath.Join(projectPath, "database", "migrate"), os.ModePerm); err != nil {
+		logrus.Fatal(fmt.Errorf("err mkdir projectPath/database/migrate: %v", err))
+	}
+
+	logrus.Info("create up.go file in migrate dir")
+	if err := generateDatabaseMigrateUpTemplate(projectPath, moduleName); err != nil {
+		logrus.Fatal(fmt.Errorf("err write file projectPath/database/migrate/up: %v", err))
+	}
+
+	logrus.Info("create schema_migration dir in database dir")
+	if err := os.MkdirAll(filepath.Join(projectPath, "database", "schema_migration"), os.ModePerm); err != nil {
+		logrus.Fatal(fmt.Errorf("err mkdir projectPath/database/schema_migration: %v", err))
+	}
+
+	if err := generateSchemaMigrationExample(projectPath); err != nil {
+		logrus.Fatal(fmt.Errorf("err generate schema migration example: %v", err))
+	}
+
 	logrus.Info("create cmd dir in project dir")
 	if err := os.MkdirAll(filepath.Join(projectPath, "cmd"), os.ModePerm); err != nil {
 		logrus.Fatal(fmt.Errorf("err mkdir projectPath/cmd: %v", err))
@@ -81,6 +100,24 @@ func CreateProject(projectName string, moduleName string) {
 	}
 
 	logrus.Info("create project finish, go to your project:\n\tcd ", projectPath)
+}
+
+func generateSchemaMigrationExample(projectPath string) error {
+	schemaExampleTemplate := `-- +migrate Up
+SELECT
+  *
+from
+  erago;
+
+-- +migrate Down`
+
+	path := filepath.Join(projectPath, "database", "schema_migration", "20240114192700-example.sql")
+
+	if err := os.WriteFile(path, []byte(schemaExampleTemplate), os.ModePerm); err != nil {
+		return fmt.Errorf("err write database schema migration example: %v", err)
+	}
+
+	return nil
 }
 
 func runGoModInit(moduleName string, projectPath string) error {
@@ -118,6 +155,20 @@ func generateMainTemplate(projectPath string, moduleName string) error {
 	path := filepath.Join(projectPath, "cmd", "main.go")
 	if err := os.WriteFile(path, []byte(mainTemplate), os.ModePerm); err != nil {
 		return fmt.Errorf("err write main.go template: %v", err)
+	}
+
+	return nil
+}
+
+func generateDatabaseMigrateUpTemplate(projectPath string, moduleName string) error {
+	databaseMigrateUpTemplate, err := template.GetDatabaseMigrateUpTemplate(moduleName)
+	if err != nil {
+		return fmt.Errorf("err get databaseMigrateUp template: %v", err)
+	}
+
+	path := filepath.Join(projectPath, "database", "migrate", "up.go")
+	if err := os.WriteFile(path, []byte(databaseMigrateUpTemplate), os.ModePerm); err != nil {
+		return fmt.Errorf("err write database migrate up template: %v", err)
 	}
 
 	return nil
