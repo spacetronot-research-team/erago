@@ -1,8 +1,7 @@
 package main
 
 import (
-	"log"
-
+	"github.com/sirupsen/logrus"
 	"github.com/spacetronot-research-team/erago/cmd/createdomain"
 	"github.com/spacetronot-research-team/erago/cmd/createproject"
 	"github.com/spacetronot-research-team/erago/cmd/explain"
@@ -25,7 +24,7 @@ func main() {
 	rootCmd.AddCommand(getExplainCmd())
 
 	if err := rootCmd.Execute(); err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 }
 

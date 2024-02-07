@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"log"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -12,62 +11,68 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
+	"github.com/sirupsen/logrus"
 	"github.com/spacetronot-research-team/erago/cmd/createdomain/template"
 	"github.com/spacetronot-research-team/erago/common/gomod"
 )
 
 // CreateDomain is main func to create new domain.
 func CreateDomain(domain string) {
-	log.Println("create domain start")
+	logrus.Println("create domain start")
 
-	log.Println("get module name")
+	logrus.Println("get module name")
 	moduleName, err := getModuleName()
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
 	varErr1 := fmt.Sprintf("%d", rand.Int())
 	varErr2 := fmt.Sprintf("%d", rand.Int())
 
-	log.Println("generate controller template")
+	logrus.Println("generate controller template")
 	if err := generateControllerTemplate(domain, moduleName, varErr1); err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
-	log.Println("generate service template")
+	logrus.Println("generate service template")
 	if err := generateServiceTemplate(domain, moduleName, varErr1, varErr2); err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
-	log.Println("generate repository template")
+	logrus.Println("generate repository template")
 	if err := generateRepositoryTemplate(domain, varErr1, varErr2); err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
-	log.Println("generate mock repository using mockgen")
+	logrus.Println("generate injection")
+	if err := generateInjectionTemplate(domain, moduleName); err != nil {
+		logrus.Fatal(err)
+	}
+
+	logrus.Println("generate mock repository using mockgen")
 	if err := generateMockRepository(domain); err != nil {
-		log.Println("err generate mock repository using mockgen, did you able to run `mockgen`?")
-		log.Println("try to install mockgen:\n\tgo install go.uber.org/mock/mockgen@latest")
-		log.Println("create domain finish without mock repository and service test template")
+		logrus.Println("err generate mock repository using mockgen, did you able to run `mockgen`?")
+		logrus.Println("try to install mockgen:\n\tgo install go.uber.org/mock/mockgen@latest")
+		logrus.Println("create domain finish without mock repository and service test template")
 		return
 	}
 
-	log.Println("generate service test template")
+	logrus.Println("generate service test template")
 	if err := generateServiceTestTemplate(domain, moduleName, varErr1, varErr2); err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
-	log.Println("generate mock service using mockgen")
+	logrus.Println("generate mock service using mockgen")
 	if err := generateMockService(domain); err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
-	log.Println("run go mod tidy")
+	logrus.Println("run go mod tidy")
 	if err := gomod.RunGoModTidy(); err != nil {
-		log.Fatal(fmt.Errorf("err run go mod tidy: %v", err))
+		logrus.Fatal(fmt.Errorf("err run go mod tidy: %v", err))
 	}
 
-	log.Println("create domain finish")
+	logrus.Println("create domain finish")
 }
 
 func generateMockRepository(domain string) error {
@@ -198,5 +203,48 @@ func generateRepositoryTemplate(domain string, varErr1 string, varErr2 string) e
 		return fmt.Errorf("err write repository template: %v", err)
 	}
 
+	return nil
+}
+
+func generateInjectionTemplate(domain string, moduleName string) error {
+	// TODO: check if file exists
+	// TODO: if exists, append
+	// TODO: if not, create new
+	path := filepath.Join("internal", "router", "injection.go")
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return fmt.Errorf("err open injection.go file: %err", err)
+		}
+
+		if err = generateNewInjectionTemplate(domain, moduleName, path); err != nil {
+			return fmt.Errorf("err generate new injection template: %v", err)
+		}
+
+		return nil
+	}
+	defer f.Close()
+
+	injectionAppendTemplate, err := template.GetInjectionAppendTemplate(domain)
+	if err != nil {
+		return fmt.Errorf("err append injection: %v", err)
+	}
+
+	if _, err := f.WriteString(injectionAppendTemplate); err != nil {
+		return fmt.Errorf("err write injection append: %v", err)
+	}
+
+	return nil
+}
+
+func generateNewInjectionTemplate(domain string, moduleName string, path string) error {
+	injectionTemplate, err := template.GetInjectionTemplate(domain, moduleName)
+	if err != nil {
+		return fmt.Errorf("err get injection template: %v", err)
+	}
+	err = os.WriteFile(path, []byte(injectionTemplate), 0666)
+	if err != nil {
+		return fmt.Errorf("err write injection template: %v", err)
+	}
 	return nil
 }
