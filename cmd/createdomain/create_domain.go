@@ -18,9 +18,9 @@ import (
 
 // CreateDomain is main func to create new domain.
 func CreateDomain(domain string) {
-	logrus.Println("create domain start")
+	logrus.Info("create domain start")
 
-	logrus.Println("get module name")
+	logrus.Info("get module name")
 	moduleName, err := getModuleName()
 	if err != nil {
 		logrus.Fatal(err)
@@ -29,50 +29,50 @@ func CreateDomain(domain string) {
 	varErr1 := fmt.Sprintf("%d", rand.Int())
 	varErr2 := fmt.Sprintf("%d", rand.Int())
 
-	logrus.Println("generate controller template")
+	logrus.Info("generate controller template")
 	if err := generateControllerTemplate(domain, moduleName, varErr1); err != nil {
 		logrus.Fatal(err)
 	}
 
-	logrus.Println("generate service template")
+	logrus.Info("generate service template")
 	if err := generateServiceTemplate(domain, moduleName, varErr1, varErr2); err != nil {
 		logrus.Fatal(err)
 	}
 
-	logrus.Println("generate repository template")
+	logrus.Info("generate repository template")
 	if err := generateRepositoryTemplate(domain, varErr1, varErr2); err != nil {
 		logrus.Fatal(err)
 	}
 
-	logrus.Println("generate injection")
+	logrus.Info("generate injection")
 	if err := generateInjectionTemplate(domain, moduleName); err != nil {
 		logrus.Fatal(err)
 	}
 
-	logrus.Println("generate mock repository using mockgen")
+	logrus.Info("generate mock repository using mockgen")
 	if err := generateMockRepository(domain); err != nil {
-		logrus.Println("err generate mock repository using mockgen, did you able to run `mockgen`?")
-		logrus.Println("try to install mockgen:\n\tgo install go.uber.org/mock/mockgen@latest")
-		logrus.Println("create domain finish without mock repository and service test template")
+		logrus.Warn("err generate mock repository using mockgen, did you able to run `mockgen`?")
+		logrus.Warn("try to install mockgen:\n\tgo install go.uber.org/mock/mockgen@latest")
+		logrus.Warn("create domain finish without mock repository and service test template")
 		return
 	}
 
-	logrus.Println("generate service test template")
+	logrus.Info("generate service test template")
 	if err := generateServiceTestTemplate(domain, moduleName, varErr1, varErr2); err != nil {
 		logrus.Fatal(err)
 	}
 
-	logrus.Println("generate mock service using mockgen")
+	logrus.Info("generate mock service using mockgen")
 	if err := generateMockService(domain); err != nil {
 		logrus.Fatal(err)
 	}
 
-	logrus.Println("run go mod tidy")
+	logrus.Info("run go mod tidy")
 	if err := gomod.RunGoModTidy(); err != nil {
 		logrus.Fatal(fmt.Errorf("err run go mod tidy: %v", err))
 	}
 
-	logrus.Println("create domain finish")
+	logrus.Info("create domain finish")
 }
 
 func generateMockRepository(domain string) error {
