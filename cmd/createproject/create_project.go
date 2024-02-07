@@ -8,6 +8,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spacetronot-research-team/erago/cmd/createdomain"
+	"github.com/spacetronot-research-team/erago/cmd/createproject/template"
 	"github.com/spacetronot-research-team/erago/common/gomod"
 )
 
@@ -46,6 +47,16 @@ func CreateProject(projectName string, moduleName string) {
 		logrus.Fatal(fmt.Errorf("err mkdir projectPath/internal/router: %v", err))
 	}
 
+	logrus.Println("create database dir in project dir")
+	if err := os.MkdirAll(filepath.Join(projectPath, "database"), os.ModePerm); err != nil {
+		logrus.Fatal(fmt.Errorf("err mkdir projectPath/database: %v", err))
+	}
+
+	logrus.Println("create open.go file in database dir")
+	if err := generateDatabaseOpenTemplate(projectPath); err != nil {
+		logrus.Fatal(fmt.Errorf("err write file projectPath/database/open.go: %v", err))
+	}
+
 	logrus.Println("create cmd dir in project dir")
 	if err := os.MkdirAll(filepath.Join(projectPath, "cmd"), os.ModePerm); err != nil {
 		logrus.Fatal(fmt.Errorf("err mkdir projectPath/cmd: %v", err))
@@ -82,6 +93,17 @@ func runGoModInit(moduleName string, projectPath string) error {
 
 	if string(stdout) != "" {
 		fmt.Println(string(stdout))
+	}
+
+	return nil
+}
+
+func generateDatabaseOpenTemplate(projectPath string) error {
+	databaseOpenTemplate := template.GetDatabaseOpenTemplate()
+
+	path := filepath.Join(projectPath, "database", "open.go")
+	if err := os.WriteFile(path, []byte(databaseOpenTemplate), 0666); err != nil {
+		return fmt.Errorf("err write database open template: %v", err)
 	}
 
 	return nil
