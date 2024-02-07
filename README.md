@@ -5,12 +5,12 @@ Erajaya CLI generate project.
 
 ```
 ├── cmd/                Initial stage of the application will run.
-├── internal/           Core module of the application and contains the implementation of various business logic.
-│   ├──  controller/    This module is only to gather input (REST/gRPC/console/etc) and pass input as request to service.
+├── internal/           Core package of the application and contains the implementation of various business logic.
+│   ├──  controller/    This package is only to gather input (REST/gRPC/console/etc) and pass input as request to service.
 │   │   ├──  http/
 │   │   ├──  grpc/
-│   ├──  service/       This module contain business logic, this module get input request from controller, this module use repository for things related to persistence.
-│   ├──  repository/    This module only for things related to persistence (CRUD database/redis/etc).
+│   ├──  service/       This package contain business logic, this package get input request from controller, this package use repository for things related to persistence.
+│   ├──  repository/    This package only for things related to persistence (CRUD database/redis/etc).
 ├── go.mod
 └── go.sum
 ```
@@ -26,7 +26,7 @@ go install github.com/spacetronot-research-team/erago@latest
 or you can define your prefered version.
 
 ```shell
-go install github.com/spacetronot-research-team/erago@v0.0.20
+go install github.com/spacetronot-research-team/erago@v0.0.21
 ```
 
 Or you can download erago binary from [release page](https://github.com/spacetronot-research-team/erago/releases).
