@@ -63,7 +63,7 @@ func CreateProject(projectName string, moduleName string) {
 	}
 
 	logrus.Println("create main.go file in cmd dir")
-	if err := os.WriteFile(filepath.Join(projectPath, "cmd", "main.go"), []byte("package main\n"), os.ModePerm); err != nil {
+	if err := generateMainTemplate(projectPath, moduleName); err != nil {
 		logrus.Fatal(fmt.Errorf("err write file projectPath/cmd/main.go: %v", err))
 	}
 
@@ -104,6 +104,20 @@ func generateDatabaseOpenTemplate(projectPath string) error {
 	path := filepath.Join(projectPath, "database", "open.go")
 	if err := os.WriteFile(path, []byte(databaseOpenTemplate), 0666); err != nil {
 		return fmt.Errorf("err write database open template: %v", err)
+	}
+
+	return nil
+}
+
+func generateMainTemplate(projectPath string, moduleName string) error {
+	mainTemplate, err := template.GetMainTemplate(moduleName)
+	if err != nil {
+		return fmt.Errorf("err get main template: %v", err)
+	}
+
+	path := filepath.Join(projectPath, "cmd", "main.go")
+	if err := os.WriteFile(path, []byte(mainTemplate), os.ModePerm); err != nil {
+		return fmt.Errorf("err write main.go template: %v", err)
 	}
 
 	return nil
