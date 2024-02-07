@@ -30,11 +30,12 @@ type MainConfig struct {
 var mainTemplate = `package main
 
 import (
-	"fmt"
 	"log"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"{{.ModuleName}}/database"
+	"{{.ModuleName}}/internal/router"
 )
 
 func main() {
@@ -44,9 +45,15 @@ func main() {
 
 	db, err := database.InitializeDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("err initialize db")
 	}
 
-	fmt.Println(db)
+	ginEngine := gin.Default()
+
+	router.Register(ginEngine, db)
+
+	if err := ginEngine.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
 `

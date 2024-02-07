@@ -35,6 +35,11 @@ func CreateProject(moduleName string) {
 		logrus.Fatal(fmt.Errorf("err mkdir projectPath: %v", err))
 	}
 
+	logrus.Info("generate .env in project dir")
+	if err := generateEnvFile(projectPath); err != nil {
+		logrus.Fatal(fmt.Errorf("err generate env file: %v", err))
+	}
+
 	logrus.Info("run go mod init in project dir")
 	if err := runGoModInit(moduleName, projectPath); err != nil {
 		logrus.Fatal(fmt.Errorf("err run go mod init in project path: %v", err))
@@ -129,6 +134,24 @@ func CreateProject(moduleName string) {
 	}
 
 	logrus.Info("create project finish, go to your project:\n\tcd ", projectPath)
+	logrus.Info("setup .env file then run:\n\tgo run cmd/main.go")
+}
+
+func generateEnvFile(projectPath string) error {
+	envTemplate := `DB_HOST="localhost"
+DB_USER="user"
+DB_PASSWORD="password"
+DB_NAME="boilerplate_catalog"
+DB_PORT="5432"
+SSL_MODE="disable"
+TZ="Asia/Jakarta"
+`
+	path := filepath.Join(projectPath, ".env")
+	if err := os.WriteFile(path, []byte(envTemplate), 0666); err != nil {
+		return fmt.Errorf("err create projectDir/.env file: %v", err)
+	}
+
+	return nil
 }
 
 func generateRouterTemplate(domain string) error {
