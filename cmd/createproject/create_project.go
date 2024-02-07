@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/spacetronot-research-team/erago/cmd/createdomain"
+	"github.com/spacetronot-research-team/erago/common/gomod"
 )
 
 // CreateProject is main func to create new project.
@@ -57,6 +58,11 @@ func CreateProject(projectName string, moduleName string) {
 
 	log.Println("create domain hello world")
 	createdomain.CreateDomain("hello world")
+
+	log.Println("run go mod tidy")
+	if err := gomod.RunGoModTidy(); err != nil {
+		log.Fatal(fmt.Errorf("err run go mod tidy: %v", err))
+	}
 
 	log.Println("create project finish, go to your project:\n\tcd", projectPath)
 }

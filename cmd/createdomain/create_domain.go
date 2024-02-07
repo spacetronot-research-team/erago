@@ -13,6 +13,7 @@ import (
 
 	"github.com/iancoleman/strcase"
 	"github.com/spacetronot-research-team/erago/cmd/createdomain/template"
+	"github.com/spacetronot-research-team/erago/common/gomod"
 )
 
 // CreateDomain is main func to create new domain.
@@ -62,7 +63,7 @@ func CreateDomain(domain string) {
 	}
 
 	log.Println("run go mod tidy")
-	if err := runGoModTidy(); err != nil {
+	if err := gomod.RunGoModTidy(); err != nil {
 		log.Fatal(fmt.Errorf("err run go mod tidy: %v", err))
 	}
 
@@ -195,20 +196,6 @@ func generateRepositoryTemplate(domain string, varErr1 string, varErr2 string) e
 	err = os.WriteFile(path, []byte(repositoryTemplate), 0666)
 	if err != nil {
 		return fmt.Errorf("err write repository template: %v", err)
-	}
-
-	return nil
-}
-
-func runGoModTidy() error {
-	cmd := exec.Command("go", "mod", "tidy")
-	stdout, err := cmd.Output()
-	if err != nil {
-		return err
-	}
-
-	if string(stdout) != "" {
-		fmt.Println(string(stdout))
 	}
 
 	return nil
