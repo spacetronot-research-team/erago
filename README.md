@@ -55,9 +55,7 @@ New project will be created in directory `go-customer`.
 cd go-customer && erago create-domain profile
 ```
 
-New domain will be created in directory `internal/controller/http/`.
-New domain will be created in directory `internal/service/`.
-New domain will be created in directory `internal/repository/`.
+New domain will be created in directory `internal/controller/http/` and `internal/service/` and `internal/repository/`.
 
 ## Docs
 
