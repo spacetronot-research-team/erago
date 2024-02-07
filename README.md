@@ -26,7 +26,7 @@ go install github.com/spacetronot-research-team/erago@latest
 or you can define your prefered version.
 
 ```shell
-go install github.com/spacetronot-research-team/erago@v0.0.21
+go install github.com/spacetronot-research-team/erago@v0.0.22
 ```
 
 Or you can download erago binary from [release page](https://github.com/spacetronot-research-team/erago/releases).

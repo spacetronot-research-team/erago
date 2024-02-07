@@ -3,5 +3,7 @@ package version
 import "fmt"
 
 func Version() {
-	fmt.Println("v0.0.21")
+	fmt.Println(Current)
 }
+
+var Current = "v0.0.22"

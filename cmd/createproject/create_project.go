@@ -109,6 +109,11 @@ func CreateProject(moduleName string) {
 		logrus.Fatal(fmt.Errorf("err change work dir to projectPath: %v", err))
 	}
 
+	logrus.Info("generate README.md")
+	if err := generateReadmeTemplate(); err != nil {
+		logrus.Fatal(fmt.Errorf("err create README.md: %v", err))
+	}
+
 	logrus.Info("create domain hello world")
 	createdomain.CreateDomain("hello world")
 
@@ -200,6 +205,20 @@ func generateDatabaseMigrateUpTemplate(projectPath string, moduleName string) er
 	path := filepath.Join(projectPath, "database", "migrate", "up.go")
 	if err := os.WriteFile(path, []byte(databaseMigrateUpTemplate), os.ModePerm); err != nil {
 		return fmt.Errorf("err write database migrate up template: %v", err)
+	}
+
+	return nil
+}
+
+func generateReadmeTemplate() error {
+	readmeTemplate, err := template.GetReadmeTemplate()
+	if err != nil {
+		return fmt.Errorf("err get readme template: %v", err)
+	}
+
+	path := filepath.Join("README.md")
+	if err := os.WriteFile(path, []byte(readmeTemplate), os.ModePerm); err != nil {
+		return fmt.Errorf("err write README.md: %v", err)
 	}
 
 	return nil
