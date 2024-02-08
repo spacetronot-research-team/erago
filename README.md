@@ -38,7 +38,7 @@ go install github.com/spacetronot-research-team/erago@latest
 or you can define your prefered version.
 
 ```shell
-go install github.com/spacetronot-research-team/erago@v0.0.25
+go install github.com/spacetronot-research-team/erago@v0.0.26
 ```
 
 Or you can download erago binary from [release page](https://github.com/spacetronot-research-team/erago/releases).
@@ -56,7 +56,7 @@ erago version
 2. Create new project.
 
 ```shell
-erago create-project go-customer github.com/spacetronot-research-team/go-customer
+erago create-project github.com/spacetronot-research-team/go-customer
 ```
 
 New project will be created in directory `go-customer`.
