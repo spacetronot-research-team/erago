@@ -15,7 +15,7 @@ func main() {
 		Use:               "erago",
 		Short:             "Erajaya CLI generate project",
 		Long:              "Erajaya CLI generate project.",
-		CompletionOptions: cobra.CompletionOptions{DisableDefaultCmd: true},
+		CompletionOptions: cobra.CompletionOptions{HiddenDefaultCmd: true},
 	}
 
 	rootCmd.AddCommand(getCreateDomainCmd())
@@ -30,22 +30,24 @@ func main() {
 
 func getCreateDomainCmd() *cobra.Command {
 	createDomainCmd := &cobra.Command{
-		Use:   "create-domain [domain]",
-		Short: "Create new domain with the provided domain name",
-		Long:  "Create new domain with the provided domain name. If no domain name is provided, it defaults to 'hello world'.",
-		Args:  cobra.MaximumNArgs(1),
-		Run:   createdomain.CLI,
+		Use:     "create-domain [domain]",
+		Short:   "Create new domain with the provided domain name",
+		Long:    "Create new domain with the provided domain name. If no domain name is provided, it defaults to 'hello world'.",
+		Args:    cobra.MaximumNArgs(1),
+		Run:     createdomain.CLI,
+		Example: "erago create-domain profile",
 	}
 	return createDomainCmd
 }
 
 func getCreateProjectCmd() *cobra.Command {
 	createProjectCmd := &cobra.Command{
-		Use:   "create-project [module-name]",
-		Short: "Create new project with the provided module name",
-		Long:  "Create new project with the provided module name.",
-		Args:  cobra.MinimumNArgs(1),
-		Run:   createproject.CLI,
+		Use:     "create-project [module-name]",
+		Short:   "Create new project with the provided module name",
+		Long:    "Create new project with the provided module name.",
+		Args:    cobra.MinimumNArgs(1),
+		Run:     createproject.CLI,
+		Example: "erago create-project github.com/eratech/go-customer",
 	}
 	return createProjectCmd
 }
