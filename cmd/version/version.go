@@ -6,4 +6,4 @@ func Version() {
 	fmt.Println(Current)
 }
 
-var Current = "v0.0.27"
+var Current = "v0.0.28"
