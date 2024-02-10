@@ -1,6 +1,6 @@
 module github.com/spacetronot-research-team/erago
 
-go 1.21.6
+go 1.22
 
 require (
 	github.com/iancoleman/strcase v0.3.0
