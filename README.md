@@ -1,7 +1,7 @@
 # erago
 Erajaya CLI generate project.
 
-![erago](https://github.com/spacetronot-research-team/erago/assets/57469556/10dc6e4c-25e7-4b48-bb9e-1e34348b8012)
+![code-arch-explain](https://github.com/spacetronot-research-team/erago/assets/57469556/a4cdb3df-0398-443d-af04-0d86831ab669)
 
 ```
 ├── cmd/
@@ -38,7 +38,7 @@ go install github.com/spacetronot-research-team/erago@latest
 or you can define your prefered version.
 
 ```shell
-go install github.com/spacetronot-research-team/erago@v0.1.3
+go install github.com/spacetronot-research-team/erago@v0.1.4
 ```
 
 Or you can download erago binary from [release page](https://github.com/spacetronot-research-team/erago/releases).
