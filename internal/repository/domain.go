@@ -16,6 +16,8 @@ import (
 type Domain interface {
 	// GetControllerTemplate return string controller template.
 	GetControllerTemplate(ctx context.Context, varErr1 string, uniqueErrCode1 string) (string, error)
+	// GetControllerTestTemplate return string controller template.
+	GetControllerTestTemplate(ctx context.Context, varErr1 string) (string, error)
 	// GetServiceTemplate return string service template.
 	GetServiceTemplate(ctx context.Context, varErr1 string, varErr2 string) (string, error)
 	// GetServiceTestTemplate return string service test template.
@@ -73,6 +75,45 @@ func NewControllerConfig(ctx context.Context, varErr1 string, uniqueErrCode1 str
 		ModuleName:       moduleName,
 		VarErr1:          varErr1,
 		UniqueErrCode1:   uniqueErrCode1,
+	}
+}
+
+// GetControllerTestTemplate implements Domain.
+// GetControllerTestTemplate return string controller test template.
+func (*domainRepository) GetControllerTestTemplate(ctx context.Context, varErr1 string) (string, error) {
+	controllerTestTemplate, err := template.New("controllerTestTemplate").Parse(templ.ControllerTest)
+	if err != nil {
+		return "", fmt.Errorf("err parse template ControllerTestTemplate: %v", err)
+	}
+
+	var templateBuf bytes.Buffer
+	controllerTestConfig := NewControllerTestConfig(ctx, varErr1)
+	if err = controllerTestTemplate.Execute(&templateBuf, controllerTestConfig); err != nil {
+		return "", fmt.Errorf("err execute controll test template: %v", err)
+	}
+
+	return templateBuf.String(), nil
+}
+
+type ControllerTestConfig struct {
+	DomainPascalCase string
+	DomainCamelCase  string
+	DomainShort      string
+	ModuleName       string
+	VarErr1          string
+}
+
+func NewControllerTestConfig(ctx context.Context, varErr1 string) ControllerTestConfig {
+	domain := ctxutil.GetDomain(ctx)
+	domainShort := ctxutil.GetDomainShort(ctx)
+	moduleName := ctxutil.GetModuleName(ctx)
+
+	return ControllerTestConfig{
+		DomainPascalCase: strcase.ToCamel(domain),
+		DomainCamelCase:  strcase.ToLowerCamel(domain),
+		DomainShort:      domainShort,
+		ModuleName:       moduleName,
+		VarErr1:          varErr1,
 	}
 }
 

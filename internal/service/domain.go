@@ -62,6 +62,8 @@ func (ds *domainService) CreateDomain(ctx context.Context) {
 		ds.generateMockService(ctx)
 
 		ds.generateServiceTestTemplate(ctx, varErr1, varErr2)
+
+		ds.generateControllerTestTemplate(ctx, varErr1)
 	}
 
 	ds.runGoModTidy()
@@ -319,7 +321,7 @@ func (ds *domainService) generateMockService(ctx context.Context) {
 	logrus.Info("generate mock service using mockgen finish")
 }
 
-// generateServiceTestTemplate generate service template.
+// generateServiceTestTemplate generate service test template.
 func (ds *domainService) generateServiceTestTemplate(ctx context.Context, varErr1 string, varErr2 string) {
 	logrus.Info("generate service test template start")
 
@@ -337,13 +339,43 @@ func (ds *domainService) generateServiceTestTemplate(ctx context.Context, varErr
 	logrus.Info("generate service test template finish")
 }
 
-func (ds *domainService) writeServiceTestTemplateFile(ctx context.Context, serviceTemplate string) error {
+func (ds *domainService) writeServiceTestTemplateFile(ctx context.Context, serviceTestTemplate string) error {
 	serviceDirPath := ctxutil.GetServiceDirPath(ctx)
 	domainSnakeCase := strcase.ToSnake(ctxutil.GetDomain(ctx))
 	path := filepath.Join(serviceDirPath, domainSnakeCase+"_test.go")
 
-	if err := os.WriteFile(path, []byte(serviceTemplate), os.ModePerm); err != nil {
+	if err := os.WriteFile(path, []byte(serviceTestTemplate), os.ModePerm); err != nil {
 		return fmt.Errorf("err write service test template: %v", err)
+	}
+
+	return nil
+}
+
+// generateControllerTestTemplate generate controller test template.
+func (ds *domainService) generateControllerTestTemplate(ctx context.Context, varErr1 string) {
+	logrus.Info("generate controller test template start")
+
+	controllerTestTemplate, err := ds.domainRepository.GetControllerTestTemplate(ctx, varErr1)
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err repo get controller test template: %v", err))
+		return
+	}
+
+	if err := ds.writeControllerTestTemplateFile(ctx, controllerTestTemplate); err != nil {
+		logrus.Warn(fmt.Errorf("err write controller test template file: %v", err))
+		return
+	}
+
+	logrus.Info("generate controller test template finish")
+}
+
+func (ds *domainService) writeControllerTestTemplateFile(ctx context.Context, controllerTestTemplate string) error {
+	controllerDirPath := ctxutil.GetControllerDirPath(ctx)
+	domainSnakeCase := strcase.ToSnake(ctxutil.GetDomain(ctx))
+	path := filepath.Join(controllerDirPath, domainSnakeCase+"_test.go")
+
+	if err := os.WriteFile(path, []byte(controllerTestTemplate), os.ModePerm); err != nil {
+		return fmt.Errorf("err write controller test template: %v", err)
 	}
 
 	return nil

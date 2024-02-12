@@ -6,6 +6,7 @@ var Controller = `package http
 import (
 	"errors"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"{{.ModuleName}}/internal/service"
@@ -32,7 +33,7 @@ func ({{.DomainShort}}c *{{.DomainPascalCase}}Controller) Qux(ctx *gin.Context) 
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"data":  nil,
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
