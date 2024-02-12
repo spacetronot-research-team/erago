@@ -75,8 +75,8 @@ func GetDocsDirPath(ctx context.Context) string {
 	return getString(ctx, KeyDocsDirPath)
 }
 
-func withCMDDirPath(ctx context.Context, CMDDirPath string) context.Context {
-	return set(ctx, KeyCMDDirPath, CMDDirPath)
+func withCMDDirPath(ctx context.Context, cmdDirPath string) context.Context {
+	return set(ctx, KeyCMDDirPath, cmdDirPath)
 }
 
 func GetCMDDirPath(ctx context.Context) string {

@@ -1,6 +1,6 @@
 package templ
 
-//nolint:all
+//nolint:dupword
 var ServiceTest = `package service
 
 import (

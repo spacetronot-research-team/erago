@@ -2,6 +2,7 @@ package templ
 
 import "github.com/spacetronot-research-team/erago/pkg/version"
 
+//nolint:lll
 func GetReadmeTemplate() string {
 	var readmeTemplate string
 

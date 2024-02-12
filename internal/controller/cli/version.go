@@ -30,7 +30,7 @@ func (vc *VersionController) GetVersionCmd() *cobra.Command {
 }
 
 // printCurrentVersion print current version to standard output.
-func (vc *VersionController) printCurrentVersion(cmd *cobra.Command, args []string) { //nolint:all
+func (vc *VersionController) printCurrentVersion(cmd *cobra.Command, args []string) {
 	currentVersion := vc.versionService.GetCurrentVersion()
-	fmt.Println(currentVersion) //nolint:all
+	fmt.Println(currentVersion) //nolint:forbidigo
 }

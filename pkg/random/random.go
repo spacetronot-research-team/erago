@@ -16,7 +16,7 @@ func String(length ...int) string {
 	}
 	b := make([]rune, size)
 	for i := range b {
-		b[i] = letterRunes[rand.Intn(len(letterRunes))] //nolint:all
+		b[i] = letterRunes[rand.Intn(len(letterRunes))] //nolint:gosec
 	}
 	return string(b)
 }
@@ -29,7 +29,7 @@ func StringPascal(length ...int) string {
 	}
 	b := make([]rune, size)
 	for i := range b {
-		b[i] = letterRunes[rand.Intn(len(letterRunes))] //nolint:all
+		b[i] = letterRunes[rand.Intn(len(letterRunes))] //nolint:gosec
 	}
 	return strcase.ToCamel(string(b))
 }

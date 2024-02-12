@@ -30,7 +30,7 @@ func (ec *ExplainController) GetExplainCmd() *cobra.Command {
 }
 
 // printCodeArchExplaination print code arch explanation to standard output.
-func (ec *ExplainController) printCodeArchExplaination(cmd *cobra.Command, args []string) { //nolint:all
+func (ec *ExplainController) printCodeArchExplaination(cmd *cobra.Command, args []string) {
 	codeArchExplanation := ec.explainService.GetCodeArchExplanation()
-	fmt.Println(codeArchExplanation) //nolint:all
+	fmt.Println(codeArchExplanation) //nolint:forbidigo
 }

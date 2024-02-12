@@ -41,7 +41,7 @@ func NewDomainService(domainRepository repository.Domain) Domain {
 
 // CreateDomain implements Domain.
 // CreateDomain create new domain.
-func (ds *domainService) CreateDomain(ctx context.Context) { //nolint:funlen
+func (ds *domainService) CreateDomain(ctx context.Context) {
 	logrus.Info("create domain start")
 
 	varErr1 := random.StringPascal()
@@ -66,18 +66,21 @@ func (ds *domainService) CreateDomain(ctx context.Context) { //nolint:funlen
 
 	ds.runGoModTidy()
 
-	logrus.Info("create domain finish")
+	if isMockgenInstalled {
+		logrus.Info("create domain finish")
+	} else {
+		logrus.Info("create domain finish without generate mock repository, mock service, and service test")
+		logrus.Info("mockgen is not installed, if you want erago to generate mock repository, mock service, and service test please install mockgen.\n\tgo install go.uber.org/mock/mockgen@latest") //nolint:lll
+	}
 
 	fileName := strcase.ToSnake(ctxutil.GetDomain(ctx))
-	logrus.Info(fmt.Sprintf("controller:\t%s:0", filepath.Join(ctxutil.GetControllerDirPath(ctx), fileName+".go")))
-	logrus.Info(fmt.Sprintf("service:\t%s:0", filepath.Join(ctxutil.GetServiceDirPath(ctx), fileName+".go:0")))
+	logrus.Info(fmt.Sprintf("controller:\t\t%s:0", filepath.Join(ctxutil.GetControllerDirPath(ctx), fileName+".go")))
+	logrus.Info(fmt.Sprintf("service:\t\t%s:0", filepath.Join(ctxutil.GetServiceDirPath(ctx), fileName+".go:0")))
 	if isMockgenInstalled {
 		logrus.Info(fmt.Sprintf("service test:\t%s:0", filepath.Join(ctxutil.GetServiceDirPath(ctx), fileName+"_test.go")))
-	} else {
-		logrus.Info("mockgen is not installed, if you want erago to generate mock repository, mock service, and service test please install mockgen.\n\tgo install go.uber.org/mock/mockgen@latest") //nolint:all
 	}
-	logrus.Info(fmt.Sprintf("repository:\t%s:0", filepath.Join(ctxutil.GetRepositoryDirPath(ctx), fileName+".go")))
-	logrus.Info(fmt.Sprintf("injection:\t%s:0", filepath.Join(ctxutil.GetRouterDirPath(ctx), "injection.go")))
+	logrus.Info(fmt.Sprintf("repository:\t\t%s:0", filepath.Join(ctxutil.GetRepositoryDirPath(ctx), fileName+".go")))
+	logrus.Info(fmt.Sprintf("injection:\t\t%s:0", filepath.Join(ctxutil.GetRouterDirPath(ctx), "injection.go")))
 }
 
 func (ds *domainService) runGoModTidy() {
@@ -171,7 +174,7 @@ func (ds *domainService) generateRepositoryTemplate(ctx context.Context, varErr1
 	uniqueErrCode1 := fmt.Sprintf("%s@%s", ctxutil.GetProjectName(ctx), random.String())
 	uniqueErrCode2 := fmt.Sprintf("%s@%s", ctxutil.GetProjectName(ctx), random.String())
 
-	repositoryTemplate, err := ds.domainRepository.GetRepositoryTemplate(ctx, varErr1, varErr2, uniqueErrCode1, uniqueErrCode2) //nolint:all
+	repositoryTemplate, err := ds.domainRepository.GetRepositoryTemplate(ctx, varErr1, varErr2, uniqueErrCode1, uniqueErrCode2) //nolint:lll
 	if err != nil {
 		logrus.Warn(fmt.Errorf("err repo get repository template: %v", err))
 		return
@@ -300,7 +303,7 @@ func (ds *domainService) generateMockRepository(ctx context.Context) {
 	}
 
 	if string(stdout) != "" {
-		fmt.Println(string(stdout)) //nolint:all
+		fmt.Println(string(stdout)) //nolint:forbidigo
 	}
 
 	logrus.Info("generate mock repository using mockgen finish")
@@ -326,7 +329,7 @@ func (ds *domainService) generateMockService(ctx context.Context) {
 	}
 
 	if string(stdout) != "" {
-		fmt.Println(string(stdout)) //nolint:all
+		fmt.Println(string(stdout)) //nolint:forbidigo
 	}
 
 	logrus.Info("generate mock service using mockgen finish")

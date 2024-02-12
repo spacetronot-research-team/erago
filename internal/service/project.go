@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -36,7 +35,7 @@ func (ps *projectService) CreateProject(ctx context.Context) {
 	logrus.Info("create project start")
 
 	if ps.isProjectAlreadyExist(ctx) {
-		logrus.Fatal(errors.New("err project already exist"))
+		logrus.Fatal("err project already exist")
 	}
 
 	ps.createProjectDir(ctx)
@@ -71,7 +70,7 @@ func (ps *projectService) CreateProject(ctx context.Context) {
 
 	ps.domainService.CreateDomain(ctx)
 
-	logrus.Info("create project finish, go to your project:\n\tcd ", ctxutil.GetProjectPath(ctx), "\nsetup .env file then run:\n\tgo run cmd/main.go")
+	logrus.Info("create project finish, go to your project:\n\tcd ", ctxutil.GetProjectPath(ctx), "\nsetup .env file then run:\n\tgo run cmd/main.go") //nolint:lll
 }
 
 func (ps *projectService) isProjectAlreadyExist(ctx context.Context) bool {
@@ -103,7 +102,7 @@ func (ps *projectService) changeDirToProjectDir(ctx context.Context) {
 	logrus.Info("change dir to project dir finish")
 }
 
-func (ps *projectService) createEnvFile(ctx context.Context) {
+func (ps *projectService) createEnvFile(ctx context.Context) { //nolint:unparam
 	logrus.Info("create env file start")
 	envTemplate := `DB_HOST="localhost"
 DB_USER="user"
@@ -132,7 +131,7 @@ func (ps *projectService) runGoModInit(ctx context.Context) {
 	}
 
 	if string(stdout) != "" {
-		fmt.Println(string(stdout))
+		fmt.Println(string(stdout)) //nolint:forbidigo
 	}
 
 	logrus.Info("run go mod init finish")
@@ -334,7 +333,7 @@ func InitializeDB() (*gorm.DB, error) {
 }
 `
 
-	if err := os.WriteFile(ctxutil.GetDatabaseMigrateUpFilePath(ctx), []byte(databaseMigrateUpTemplate), os.ModePerm); err != nil {
+	if err := os.WriteFile(ctxutil.GetDatabaseMigrateUpFilePath(ctx), []byte(databaseMigrateUpTemplate), os.ModePerm); err != nil { //nolint:lll
 		logrus.Fatal(fmt.Errorf("err create database migrate up file: %v", err))
 	}
 
@@ -362,7 +361,7 @@ from
 
 -- +migrate Down`
 
-	if err := os.WriteFile(ctxutil.GetDatabaseSchemaMigrationFileExamplePath(ctx), []byte(databaseSchemaMigrationFileTemplate), os.ModePerm); err != nil {
+	if err := os.WriteFile(ctxutil.GetDatabaseSchemaMigrationFileExamplePath(ctx), []byte(databaseSchemaMigrationFileTemplate), os.ModePerm); err != nil { //nolint:lll
 		logrus.Fatal(fmt.Errorf("err create database schema migration file example: %v", err))
 	}
 

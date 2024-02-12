@@ -1,6 +1,6 @@
 package templ
 
-//nolint:all
+//nolint:lll
 var Controller = `package http
 
 import (

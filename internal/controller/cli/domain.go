@@ -25,7 +25,7 @@ func (dc *DomainController) GetCreateDomainCmd() *cobra.Command {
 	createDomainCmd := &cobra.Command{
 		Use:     "create-domain [domain]",
 		Short:   "Create new domain with the provided domain name",
-		Long:    "Create new domain with the provided domain name. If no domain name is provided, it defaults to 'hello world'.", //nolint:all
+		Long:    "Create new domain with the provided domain name. If no domain name is provided, it defaults to 'hello world'.", //nolint:lll
 		Args:    cobra.MaximumNArgs(1),
 		Run:     dc.CreateDomain,
 		Example: "erago create-domain profile",

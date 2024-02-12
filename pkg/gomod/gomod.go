@@ -16,7 +16,7 @@ func RunGoModTidy() error {
 	}
 
 	if string(stdout) != "" {
-		fmt.Println(string(stdout)) //nolint:all
+		fmt.Println(string(stdout)) //nolint:forbidigo
 	}
 
 	return nil

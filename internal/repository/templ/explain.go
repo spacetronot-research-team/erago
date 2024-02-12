@@ -1,6 +1,6 @@
 package templ
 
-//nolint:all
+//nolint:lll
 var Explain = `├── cmd/
 │   ├── main.go             Initial stage of the application will run.
 ├── database/

@@ -17,11 +17,11 @@ type Domain interface {
 	// GetControllerTemplate return string controller template.
 	GetControllerTemplate(ctx context.Context, varErr1 string, uniqueErrCode1 string) (string, error)
 	// GetServiceTemplate return string service template.
-	GetServiceTemplate(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) (string, error) //nolint:all
+	GetServiceTemplate(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) (string, error) //nolint:lll
 	// GetServiceTestTemplate return string service test template.
 	GetServiceTestTemplate(ctx context.Context, varErr1 string, varErr2 string) (string, error)
 	// GetRepositoryTemplate return string repository template.
-	GetRepositoryTemplate(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) (string, error) //nolint:all
+	GetRepositoryTemplate(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) (string, error) //nolint:lll
 	// GetNewInjectionTemplate return string new injection template.
 	GetNewInjectionTemplate(ctx context.Context) (string, error)
 	// GetAppendInjectionTemplate return string append injection template.
@@ -37,7 +37,7 @@ func NewDomainRepository() Domain {
 
 // GetControllerTemplate implements Domain.
 // GetControllerTemplate return string controller template.
-func (*domainRepository) GetControllerTemplate(ctx context.Context, varErr1 string, uniqueErrCode1 string) (string, error) { //nolint:all
+func (*domainRepository) GetControllerTemplate(ctx context.Context, varErr1 string, uniqueErrCode1 string) (string, error) { //nolint:lll
 	controllerTemplate, err := template.New("controllerTemplate").Parse(templ.Controller)
 	if err != nil {
 		return "", fmt.Errorf("err parse template controllerTemplate: %v", err)
@@ -78,7 +78,7 @@ func NewControllerConfig(ctx context.Context, varErr1 string, uniqueErrCode1 str
 
 // GetServiceTemplate implements Domain.
 // GetServiceTemplate return string service template.
-func (*domainRepository) GetServiceTemplate(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) (string, error) { //nolint:all
+func (*domainRepository) GetServiceTemplate(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) (string, error) { //nolint:lll
 	serviceTemplate, err := template.New("serviceTemplate").Parse(templ.Service)
 	if err != nil {
 		return "", fmt.Errorf("err parse template serviceTemplate: %v", err)
@@ -105,7 +105,7 @@ type ServiceConfig struct {
 	UniqueErrCode2   string
 }
 
-func NewServiceConfig(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) ServiceConfig { //nolint:all
+func NewServiceConfig(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) ServiceConfig { //nolint:lll
 	domain := ctxutil.GetDomain(ctx)
 	domainShort := ctxutil.GetDomainShort(ctx)
 	moduleName := ctxutil.GetModuleName(ctx)
@@ -125,7 +125,7 @@ func NewServiceConfig(ctx context.Context, varErr1 string, varErr2 string, uniqu
 
 // GetRepositoryTemplate implements Domain.
 // GetRepositoryTemplate return string repository template.
-func (*domainRepository) GetRepositoryTemplate(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) (string, error) { //nolint:all
+func (*domainRepository) GetRepositoryTemplate(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) (string, error) { //nolint:lll
 	repositoryTemplate, err := template.New("RepositoryTemplate").Parse(templ.Repository)
 	if err != nil {
 		return "", fmt.Errorf("err parse template repositoryTemplate: %v", err)
@@ -151,7 +151,7 @@ type RepositoryConfig struct {
 	UniqueErrCode2   string
 }
 
-func NewRepositoryConfig(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) RepositoryConfig { //nolint:all
+func NewRepositoryConfig(ctx context.Context, varErr1 string, varErr2 string, uniqueErrCode1 string, uniqueErrCode2 string) RepositoryConfig { //nolint:lll
 	domain := ctxutil.GetDomain(ctx)
 	domainShort := ctxutil.GetDomainShort(ctx)
 
