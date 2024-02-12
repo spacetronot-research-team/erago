@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spacetronot-research-team/erago/internal/repository"
 	"github.com/spacetronot-research-team/erago/pkg/ctxutil"
+	"github.com/spacetronot-research-team/erago/pkg/version"
 )
 
 //go:generate mockgen -source=project.go -destination=mockservice/project.go -package=mockservice
@@ -71,6 +72,8 @@ func (ps *projectService) CreateProject(ctx context.Context) {
 	ps.createReadmeFile(ctx)
 
 	ps.domainService.CreateDomain(ctx)
+
+	ps.runGitInitAndCommit(ctx)
 
 	logrus.Info("create project finish, go to your project:\n\tcd ", ctxutil.GetProjectPath(ctx), "\nsetup .env file then run:\n\tgo run cmd/main.go") //nolint:lll
 }
@@ -430,4 +433,41 @@ func (ps *projectService) createReadmeFile(ctx context.Context) {
 	}
 
 	logrus.Info("create readme file finish")
+}
+
+func (ps *projectService) runGitInitAndCommit(ctx context.Context) { //nolint:unparam
+	logrus.Info("run git init and commit start")
+
+	cmd := exec.Command("git", "init", "-b", "main")
+	stdout, err := cmd.Output()
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err run git init: %v", err))
+	}
+
+	if string(stdout) != "" {
+		fmt.Println(string(stdout)) //nolint:forbidigo
+	}
+
+	cmd = exec.Command("git", "add", ".")
+	stdout, err = cmd.Output()
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err run git add: %v", err))
+	}
+
+	if string(stdout) != "" {
+		fmt.Println(string(stdout)) //nolint:forbidigo
+	}
+
+	commitMsg := fmt.Sprintf("initialize project by erago@%s", version.Current)
+	cmd = exec.Command("git", "commit", "-m", commitMsg)
+	stdout, err = cmd.Output()
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err run git commit: %v", err))
+	}
+
+	if string(stdout) != "" {
+		fmt.Println(string(stdout)) //nolint:forbidigo
+	}
+
+	logrus.Info("run git init and commit finish")
 }
