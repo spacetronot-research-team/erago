@@ -17,11 +17,11 @@ type Domain interface {
 	// GetControllerTemplate return string controller template.
 	GetControllerTemplate(ctx context.Context, varErr1 string, uniqueErrCode1 string) (string, error)
 	// GetServiceTemplate return string service template.
-	GetServiceTemplate(ctx context.Context, varErr1 string, varErr2 string) (string, error) //nolint:lll
+	GetServiceTemplate(ctx context.Context, varErr1 string, varErr2 string) (string, error)
 	// GetServiceTestTemplate return string service test template.
 	GetServiceTestTemplate(ctx context.Context, varErr1 string, varErr2 string) (string, error)
 	// GetRepositoryTemplate return string repository template.
-	GetRepositoryTemplate(ctx context.Context, varErr1 string, varErr2 string) (string, error) //nolint:lll
+	GetRepositoryTemplate(ctx context.Context, varErr1 string, varErr2 string) (string, error)
 	// GetNewInjectionTemplate return string new injection template.
 	GetNewInjectionTemplate(ctx context.Context) (string, error)
 	// GetAppendInjectionTemplate return string append injection template.
@@ -103,7 +103,7 @@ type ServiceConfig struct {
 	VarErr2          string
 }
 
-func NewServiceConfig(ctx context.Context, varErr1 string, varErr2 string) ServiceConfig { //nolint:lll
+func NewServiceConfig(ctx context.Context, varErr1 string, varErr2 string) ServiceConfig {
 	domain := ctxutil.GetDomain(ctx)
 	domainShort := ctxutil.GetDomainShort(ctx)
 	moduleName := ctxutil.GetModuleName(ctx)
@@ -145,7 +145,7 @@ type RepositoryConfig struct {
 	VarErr2          string
 }
 
-func NewRepositoryConfig(ctx context.Context, varErr1 string, varErr2 string) RepositoryConfig { //nolint:lll
+func NewRepositoryConfig(ctx context.Context, varErr1 string, varErr2 string) RepositoryConfig {
 	domain := ctxutil.GetDomain(ctx)
 	domainShort := ctxutil.GetDomainShort(ctx)
 

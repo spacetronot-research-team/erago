@@ -163,7 +163,7 @@ func (ds *domainService) writeServiceTemplateFile(ctx context.Context, serviceTe
 func (ds *domainService) generateRepositoryTemplate(ctx context.Context, varErr1 string, varErr2 string) {
 	logrus.Info("generate repository template start")
 
-	repositoryTemplate, err := ds.domainRepository.GetRepositoryTemplate(ctx, varErr1, varErr2) //nolint:lll
+	repositoryTemplate, err := ds.domainRepository.GetRepositoryTemplate(ctx, varErr1, varErr2)
 	if err != nil {
 		logrus.Warn(fmt.Errorf("err repo get repository template: %v", err))
 		return
