@@ -12,8 +12,8 @@ import (
 //go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mockrepository/{{.DomainSnakeCase}}.go -package=mockrepository
 
 var (
-	Err{{.VarErr1}} = errors.New("[{{.UniqueErrCode1}}] err blabla")
-	Err{{.VarErr2}} = errors.New("[{{.UniqueErrCode2}}] err babibu")
+	Err{{.VarErr1}} = errors.New("err blabla")
+	Err{{.VarErr2}} = errors.New("err babibu")
 )
 
 type {{.DomainPascalCase}} interface {

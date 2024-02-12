@@ -133,10 +133,7 @@ func (ds *domainService) writeControllerTemplateFile(ctx context.Context, contro
 func (ds *domainService) generateServiceTemplate(ctx context.Context, varErr1 string, varErr2 string) {
 	logrus.Info("generate service template start")
 
-	uniqueErrCode1 := fmt.Sprintf("%s@%s", ctxutil.GetProjectName(ctx), random.String())
-	uniqueErrCode2 := fmt.Sprintf("%s@%s", ctxutil.GetProjectName(ctx), random.String())
-
-	serviceTemplate, err := ds.domainRepository.GetServiceTemplate(ctx, varErr1, varErr2, uniqueErrCode1, uniqueErrCode2)
+	serviceTemplate, err := ds.domainRepository.GetServiceTemplate(ctx, varErr1, varErr2)
 	if err != nil {
 		logrus.Warn(fmt.Errorf("err repo get service template: %v", err))
 		return
@@ -144,11 +141,6 @@ func (ds *domainService) generateServiceTemplate(ctx context.Context, varErr1 st
 
 	if err := ds.writeServiceTemplateFile(ctx, serviceTemplate); err != nil {
 		logrus.Warn(fmt.Errorf("err write service template file: %v", err))
-		return
-	}
-
-	if err := osfile.AddUniqueErrCodeToErrorsJSON(ctx, uniqueErrCode1, uniqueErrCode2); err != nil {
-		logrus.Warn(fmt.Errorf("%v: %v", ErrAddUniqueErrCodeToErrorsJSON, err))
 		return
 	}
 
@@ -171,10 +163,7 @@ func (ds *domainService) writeServiceTemplateFile(ctx context.Context, serviceTe
 func (ds *domainService) generateRepositoryTemplate(ctx context.Context, varErr1 string, varErr2 string) {
 	logrus.Info("generate repository template start")
 
-	uniqueErrCode1 := fmt.Sprintf("%s@%s", ctxutil.GetProjectName(ctx), random.String())
-	uniqueErrCode2 := fmt.Sprintf("%s@%s", ctxutil.GetProjectName(ctx), random.String())
-
-	repositoryTemplate, err := ds.domainRepository.GetRepositoryTemplate(ctx, varErr1, varErr2, uniqueErrCode1, uniqueErrCode2) //nolint:lll
+	repositoryTemplate, err := ds.domainRepository.GetRepositoryTemplate(ctx, varErr1, varErr2) //nolint:lll
 	if err != nil {
 		logrus.Warn(fmt.Errorf("err repo get repository template: %v", err))
 		return
@@ -182,11 +171,6 @@ func (ds *domainService) generateRepositoryTemplate(ctx context.Context, varErr1
 
 	if err := ds.writeRepositoryTemplateFile(ctx, repositoryTemplate); err != nil {
 		logrus.Warn(fmt.Errorf("err write repository template file: %v", err))
-		return
-	}
-
-	if err := osfile.AddUniqueErrCodeToErrorsJSON(ctx, uniqueErrCode1, uniqueErrCode2); err != nil {
-		logrus.Warn(fmt.Errorf("%v: %v", ErrAddUniqueErrCodeToErrorsJSON, err))
 		return
 	}
 

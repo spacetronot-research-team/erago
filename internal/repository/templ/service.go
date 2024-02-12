@@ -13,8 +13,8 @@ import (
 //go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mockservice/{{.DomainSnakeCase}}.go -package=mockservice
 
 var (
-	Err{{.VarErr1}} = errors.New("[{{.UniqueErrCode1}}] err jasdfsefs")
-	Err{{.VarErr2}} = errors.New("[{{.UniqueErrCode2}}] err jasdf")
+	Err{{.VarErr1}} = errors.New("err jasdfsefs")
+	Err{{.VarErr2}} = errors.New("err jasdf")
 )
 
 type {{.DomainPascalCase}} interface {
