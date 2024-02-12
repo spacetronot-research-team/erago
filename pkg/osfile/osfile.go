@@ -17,7 +17,7 @@ func AddUniqueErrCodeToErrorsJSON(ctx context.Context, uniqueErrCodes ...string)
 	}
 
 	for _, uniqueErrCode := range uniqueErrCodes {
-		mapData[uniqueErrCode] = "kalimat yang akan ditampilkan frontend"
+		mapData[uniqueErrCode] = "word that will be displayed by the frontend."
 	}
 
 	if err := mapToJSONFile(mapData, errorsJSONPath); err != nil {
