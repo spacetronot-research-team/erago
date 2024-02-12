@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-//go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mockrepository/{{.DomainSnakeCase}}.go -package=mockrepository
+//go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mock/{{.DomainSnakeCase}}.go -package=mock
 
 var (
 	Err{{.VarErr1}} = errors.New("err blabla")

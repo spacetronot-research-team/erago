@@ -10,7 +10,7 @@ import (
 	"{{.ModuleName}}/internal/repository"
 )
 
-//go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mockservice/{{.DomainSnakeCase}}.go -package=mockservice
+//go:generate mockgen -source={{.DomainSnakeCase}}.go -destination=mock/{{.DomainSnakeCase}}.go -package=mock
 
 var (
 	Err{{.VarErr1}} = errors.New("err jasdfsefs")

@@ -7,14 +7,14 @@ import (
 	"context"
 	"testing"
 
-	"{{.ModuleName}}/internal/repository/mockrepository"
+	"{{.ModuleName}}/internal/repository/mock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
 
 func Test_{{.DomainCamelCase}}Service_Bar(t *testing.T) {
 	type fields struct {
-		{{.DomainCamelCase}}Repository *mockrepository.Mock{{.DomainPascalCase}}
+		{{.DomainCamelCase}}Repository *mock.Mock{{.DomainPascalCase}}
 	}
 	type args struct {
 		ctx context.Context
@@ -71,7 +71,7 @@ func Test_{{.DomainCamelCase}}Service_Bar(t *testing.T) {
 			defer ctrl.Finish()
 
 			f := fields{
-				{{.DomainCamelCase}}Repository: mockrepository.NewMock{{.DomainPascalCase}}(ctrl),
+				{{.DomainCamelCase}}Repository: mock.NewMock{{.DomainPascalCase}}(ctrl),
 			}
 			tt.mock(f)
 

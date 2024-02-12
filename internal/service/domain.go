@@ -276,9 +276,9 @@ func (ds *domainService) generateMockRepository(ctx context.Context) {
 	domainFileName := strcase.ToSnake(domain)
 
 	source := fmt.Sprintf("-source=%s.go", domainFileName)
-	destination := fmt.Sprintf("-destination=%s", filepath.Join("mockrepository", domainFileName+".go"))
+	destination := fmt.Sprintf("-destination=%s", filepath.Join("mock", domainFileName+".go"))
 
-	cmd := exec.Command("mockgen", source, destination, "-package=mockrepository")
+	cmd := exec.Command("mockgen", source, destination, "-package=mock")
 	cmd.Dir = ctxutil.GetRepositoryDirPath(ctx)
 	stdout, err := cmd.Output()
 	if err != nil {
@@ -302,9 +302,9 @@ func (ds *domainService) generateMockService(ctx context.Context) {
 	domainFileName := strcase.ToSnake(domain)
 
 	source := fmt.Sprintf("-source=%s.go", domainFileName)
-	destination := fmt.Sprintf("-destination=%s", filepath.Join("mockservice", domainFileName+".go"))
+	destination := fmt.Sprintf("-destination=%s", filepath.Join("mock", domainFileName+".go"))
 
-	cmd := exec.Command("mockgen", source, destination, "-package=mockservice")
+	cmd := exec.Command("mockgen", source, destination, "-package=mock")
 	cmd.Dir = ctxutil.GetServiceDirPath(ctx)
 	stdout, err := cmd.Output()
 	if err != nil {
