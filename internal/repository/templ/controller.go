@@ -30,8 +30,15 @@ func ({{.DomainShort}}c *{{.DomainPascalCase}}Controller) Qux(ctx *gin.Context) 
 	if err := {{.DomainShort}}c.{{.DomainCamelCase}}Service.Bar(ctx); err != nil {
 		err = errors.Join(err, Err{{.VarErr1}})
 		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"data":  nil,
+			"error": err,
+		})
 		return
 	}
-	log.Println("^.^")
+	ctx.JSON(http.StatusOK, gin.H{
+		"data":  "success qux",
+		"error": nil,
+	})
 }
 `
