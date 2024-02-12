@@ -89,7 +89,7 @@ func (*domainRepository) GetControllerTestTemplate(ctx context.Context, varErr1 
 	var templateBuf bytes.Buffer
 	controllerTestConfig := NewControllerTestConfig(ctx, varErr1)
 	if err = controllerTestTemplate.Execute(&templateBuf, controllerTestConfig); err != nil {
-		return "", fmt.Errorf("err execute controll test template: %v", err)
+		return "", fmt.Errorf("err execute controller test template: %v", err)
 	}
 
 	return templateBuf.String(), nil

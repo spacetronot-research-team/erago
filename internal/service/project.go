@@ -48,6 +48,8 @@ func (ps *projectService) CreateProject(ctx context.Context) {
 	}
 	ctx = ctxutil.SetAllDirPath(ctx, projectPath)
 
+	ps.createGitIgnoreFile(ctx)
+
 	ps.createEnvFile(ctx)
 
 	ps.runGoModInit(ctx)
@@ -100,6 +102,18 @@ func (ps *projectService) changeDirToProjectDir(ctx context.Context) {
 		logrus.Fatal(fmt.Errorf("err change dir to project dir: %v", err))
 	}
 	logrus.Info("change dir to project dir finish")
+}
+
+func (ps *projectService) createGitIgnoreFile(ctx context.Context) {
+	logrus.Info("create git ignore file start")
+
+	gitIgnoreTemplate := ps.projectRepository.GetGitIgnoreTemplate(ctx)
+
+	if err := os.WriteFile(".gitignore", []byte(gitIgnoreTemplate), os.ModePerm); err != nil {
+		logrus.Fatal(fmt.Errorf("err create git ignore file: %v", err))
+	}
+
+	logrus.Info("create git ignore file finish")
 }
 
 func (ps *projectService) createEnvFile(ctx context.Context) { //nolint:unparam

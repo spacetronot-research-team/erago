@@ -1,5 +1,6 @@
 package templ
 
+//nolint:dupword
 var ControllerTest = `package http
 
 import (

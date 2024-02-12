@@ -20,6 +20,8 @@ type Project interface {
 	GetRouterTemplate(ctx context.Context) (string, error)
 	// GetReadmeTemplate return string router template.
 	GetReadmeTemplate(ctx context.Context) (string, error)
+	// GetGitIgnoreTemplate return string git ignore template.
+	GetGitIgnoreTemplate(ctx context.Context) string
 }
 
 type projectRepository struct {
@@ -108,4 +110,10 @@ func NewReadmeConfig(ctx context.Context) ReadmeConfig {
 	return ReadmeConfig{
 		ProjectName: ctxutil.GetProjectName(ctx),
 	}
+}
+
+// GetGitIgnoreTemplate implements Project.
+// GetGitIgnoreTemplate return string git ignore template.
+func (*projectRepository) GetGitIgnoreTemplate(ctx context.Context) string {
+	return templ.GitIgnoreTemplate()
 }
