@@ -23,6 +23,7 @@ func Test{{.DomainPascalCase}}Controller_Qux(t *testing.T) {
 		{{.DomainCamelCase}}Service *mock.Mock{{.DomainPascalCase}}
 	}
 	type args struct {
+		reqHeader map[string]string
 		reqBody gin.H
 	}
 	tests := []struct {
@@ -78,7 +79,11 @@ func Test{{.DomainPascalCase}}Controller_Qux(t *testing.T) {
 			rr := httptest.NewRecorder()
 			ctx, _ := gin.CreateTestContext(rr)
 			reqBody, _ := json.Marshal(tt.args.reqBody)
-			ctx.Request = httptest.NewRequest(http.MethodGet, "/", bytes.NewReader(reqBody))
+			req := httptest.NewRequest(http.MethodGet, "/", bytes.NewReader(reqBody))
+			for k, v := range tt.args.reqHeader {
+				req.Header.Set(k, v)
+			}
+			ctx.Request = req
 
 			{{.DomainShort}}.Qux(ctx)
 
