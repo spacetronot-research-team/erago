@@ -35,7 +35,8 @@ func New{{.DomainPascalCase}}Repository(db *gorm.DB) {{.DomainPascalCase}} {
 
 // Foo blablablablabla.
 func ({{.DomainShort}}r *{{.DomainCamelCase}}Repository) Foo(ctx context.Context) error {
-	err := gorm.ErrRecordNotFound // error from query
+	var quuz int32
+	err := {{.DomainShort}}r.db.Raw("SELECT 1").Scan(&quuz).Error
 	if err != nil {
 		return errors.Join(err, Err{{.VarErr1}})
 	}

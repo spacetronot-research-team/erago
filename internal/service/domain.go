@@ -61,6 +61,8 @@ func (ds *domainService) CreateDomain(ctx context.Context) {
 
 		ds.generateMockService(ctx)
 
+		ds.generateRepositoryTestTemplate(ctx, varErr1)
+
 		ds.generateServiceTestTemplate(ctx, varErr1, varErr2)
 
 		ds.generateControllerTestTemplate(ctx, varErr1)
@@ -376,6 +378,36 @@ func (ds *domainService) writeControllerTestTemplateFile(ctx context.Context, co
 
 	if err := os.WriteFile(path, []byte(controllerTestTemplate), os.ModePerm); err != nil {
 		return fmt.Errorf("err write controller test template: %v", err)
+	}
+
+	return nil
+}
+
+// generateRepositoryTestTemplate generate repository test template.
+func (ds *domainService) generateRepositoryTestTemplate(ctx context.Context, varErr1 string) {
+	logrus.Info("generate repository test template start")
+
+	repositoryTestTemplate, err := ds.domainRepository.GetRepositoryTestTemplate(ctx, varErr1)
+	if err != nil {
+		logrus.Warn(fmt.Errorf("err repo get repository test template: %v", err))
+		return
+	}
+
+	if err := ds.writeRepositoryTestTemplateFile(ctx, repositoryTestTemplate); err != nil {
+		logrus.Warn(fmt.Errorf("err write repository test template file: %v", err))
+		return
+	}
+
+	logrus.Info("generate repository test template finish")
+}
+
+func (ds *domainService) writeRepositoryTestTemplateFile(ctx context.Context, repositoryTestTemplate string) error {
+	repositoryDirPath := ctxutil.GetRepositoryDirPath(ctx)
+	domainSnakeCase := strcase.ToSnake(ctxutil.GetDomain(ctx))
+	path := filepath.Join(repositoryDirPath, domainSnakeCase+"_test.go")
+
+	if err := os.WriteFile(path, []byte(repositoryTestTemplate), os.ModePerm); err != nil {
+		return fmt.Errorf("err write repository test template: %v", err)
 	}
 
 	return nil

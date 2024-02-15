@@ -24,6 +24,8 @@ type Domain interface {
 	GetServiceTestTemplate(ctx context.Context, varErr1 string, varErr2 string) (string, error)
 	// GetRepositoryTemplate return string repository template.
 	GetRepositoryTemplate(ctx context.Context, varErr1 string, varErr2 string) (string, error)
+	// GetRepositoryTestTemplate return string repository test template.
+	GetRepositoryTestTemplate(ctx context.Context, varErr1 string) (string, error)
 	// GetNewInjectionTemplate return string new injection template.
 	GetNewInjectionTemplate(ctx context.Context) (string, error)
 	// GetAppendInjectionTemplate return string append injection template.
@@ -303,5 +305,39 @@ func NewServiceTestConfig(ctx context.Context, varErr1 string, varErr2 string) S
 		ModuleName:       moduleName,
 		VarErr1:          varErr1,
 		VarErr2:          varErr2,
+	}
+}
+
+// GetRepositoryTestTemplate implements Domain.
+// GetRepositoryTemplate return string repository test template.
+func (*domainRepository) GetRepositoryTestTemplate(ctx context.Context, varErr1 string) (string, error) {
+	repositoryTestTemplate, err := template.New("repositoyrTestTemplate").Parse(templ.RepositoryTest)
+	if err != nil {
+		return "", fmt.Errorf("err parse template repositoryTestTemplate: %v", err)
+	}
+
+	var templateBuf bytes.Buffer
+	repositoryTestConfig := NewRepositoryTestConfig(ctx, varErr1)
+	if err := repositoryTestTemplate.Execute(&templateBuf, repositoryTestConfig); err != nil {
+		return "", fmt.Errorf("err execute repository template test: %v", err)
+	}
+
+	return templateBuf.String(), nil
+}
+
+type RepositoryTestConfig struct {
+	DomainCamelCase string
+	DomainShort     string
+	VarErr1         string
+}
+
+func NewRepositoryTestConfig(ctx context.Context, varErr1 string) RepositoryTestConfig {
+	domain := ctxutil.GetDomain(ctx)
+	domainShort := ctxutil.GetDomainShort(ctx)
+
+	return RepositoryTestConfig{
+		DomainCamelCase: strcase.ToLowerCamel(domain),
+		DomainShort:     domainShort,
+		VarErr1:         varErr1,
 	}
 }
