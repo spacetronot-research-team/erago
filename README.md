@@ -18,11 +18,9 @@ Erajaya CLI generate project.
 │   │   ├── http/
 │   │   ├── grpc/
 │   ├── repository/         Contain things related to persistence (CRUD database/redis/etc).
-│   │   ├── mockrepository/
 │   ├── router/
 │   │   ├── injection.go    Contain dependency injection from controller to service to repository.
 │   ├── service/            Contain business logic, this package get input request from controller, this package use repository for things related to persistence.
-│   │   ├── mockservice/
 ├── go.mod
 └── go.sum
 └── README.md
@@ -39,7 +37,7 @@ go install github.com/spacetronot-research-team/erago@latest
 or you can define your prefered version.
 
 ```shell
-go install github.com/spacetronot-research-team/erago@v0.1.15
+go install github.com/spacetronot-research-team/erago@v0.1.16
 ```
 
 Or you can download erago binary from [release page](https://github.com/spacetronot-research-team/erago/releases).

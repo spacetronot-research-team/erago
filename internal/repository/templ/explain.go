@@ -14,11 +14,9 @@ var Explain = `├── cmd/
 │   │   ├── http/
 │   │   ├── grpc/
 │   ├── repository/         Contain things related to persistence (CRUD database/redis/etc).
-│   │   ├── mockrepository/
 │   ├── router/
 │   │   ├── injection.go    Contain dependency injection from controller to service to repository.
 │   ├── service/            Contain business logic, this package get input request from controller, this package use repository for things related to persistence.
-│   │   ├── mockservice/
 ├── go.mod
 └── go.sum
 └── README.md
