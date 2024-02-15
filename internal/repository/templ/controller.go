@@ -5,10 +5,10 @@ var Controller = `package http
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"{{.ModuleName}}/internal/service"
 )
 
@@ -30,7 +30,7 @@ func New{{.DomainPascalCase}}Controller({{.DomainCamelCase}}Service service.{{.D
 func ({{.DomainShort}}c *{{.DomainPascalCase}}Controller) Qux(ctx *gin.Context) {
 	if err := {{.DomainShort}}c.{{.DomainCamelCase}}Service.Bar(ctx); err != nil {
 		err = errors.Join(err, Err{{.VarErr1}})
-		log.Println(err)
+		logrus.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"data":  nil,
 			"error": err.Error(),
